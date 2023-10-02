@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    HOME PAGE
+
+    <script>
+const MY_SERVER = "http://127.0.0.1:5000/"
+let index= 0
+let books = []
+let readers = []
+let loans = []
+
+async function loadBooks(){
+
+    fetch(`${MY_SERVER}books/get`)
+    .then(response => {
+        // Check if the response status is OK (200)
+        if (response.ok) {
+        // Parse the JSON response
+        return response.json();
+        } else {
+        throw new Error('Failed to fetch data');
+        }
+    })
+    .then(data => {
+        // Handle the JSON data and save it to the books array
+        books = data; // Assuming the JSON data is an array of books
+        console.log(books);
+
+        // You can now work with the 'books' array as needed
+    })
+    .catch(error => {
+        // Handle any errors that occurred during the fetch
+        console.error('Error:', error);
+    });
+
+    }
+async function loadLoans(){
+
+    fetch(`${MY_SERVER}loans/get`)
+        .then(response => {
+            // Check if the response status is OK (200)
+            if (response.ok) {
+            // Parse the JSON response
+            return response.json();
+            } else {
+            throw new Error('Failed to fetch data');
+            }
+        })
+        .then(data => {
+            // Handle the JSON data and save it to the books array
+            loans = data; // Assuming the JSON data is an array of books
+            console.log(loans);
+
+            // You can now work with the 'books' array as needed
+        })
+        .catch(error => {
+            // Handle any errors that occurred during the fetch
+            console.error('Error:', error);
+        });
+
+        }
+async function loadCustomers(){
+
+    fetch(`${MY_SERVER}customers/get`)
+    .then(response => {
+        // Check if the response status is OK (200)
+        if (response.ok) {
+        // Parse the JSON response
+        return response.json();
+        } else {
+        throw new Error('Failed to fetch data');
+        }
+    })
+    .then(data => {
+        // Handle the JSON data and save it to the books array
+        customers = data; // Assuming the JSON data is an array of books
+        console.log(customers);
+
+        // You can now work with the 'books' array as needed
+    })
+    .catch(error => {
+        // Handle any errors that occurred during the fetch
+        console.error('Error:', error);
+    });
+
+    }
+function loadAllData (){
+    loadBooks();
+    loadLoans();
+    loadCustomers();
+    }
+
+
+loadAllData();
+    </script>
+</body>
+</html>
