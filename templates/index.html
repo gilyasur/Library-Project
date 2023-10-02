@@ -4,100 +4,201 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
 </head>
 <body>
-    HOME PAGE
-
+    <h1>Welcome to the Library</h1>
+    <button onclick="displayBooks()">Books List</button>
+    <button onclick="displayLoans()">Show Loans</button>
+    <button onclick="displayCustomers()">Show customers</button>
+    <div id="display"></div>
+    <h1>Add a Book</h1>
+    Name of Book<input type ="text" id="boo_name"><br>
+    Author of Book<input type ="text" id="boo_author"><br>
+    Year of publication<input type ="text" id="boo_year_published"><br>
+    Book Loan Period <select name="boo_loan_type" id="boo_loan_type">
+        <option value="1">10 days</option>
+        <option value="2">5 days</option>
+        <option value="3">2 days</option>
+    </select>
+    <button class="btn btn-primary" onclick="add_book()">Add</button><br>
     <script>
 const MY_SERVER = "http://127.0.0.1:5000/"
 let index= 0
 let books = []
-let readers = []
+let customers = []
 let loans = []
+let loan_type_js = ""
+const get_data_books = async () => {
+    try {
+        const res = await axios.get(`${MY_SERVER}books/get`);
+        const books = res.data;
+        console.log(books); // Log the API response
 
-async function loadBooks(){
+        // Default value for loan_type_js if loan_type is missing
+        const loanType = books.loan_type || 0; // Assuming 0 is a suitable default
+        
+        if (loanType == 1) { loan_type_js = "10 days"; }
+        else if (loanType == 2) { loan_type_js = "5 days"; }
+        else { loan_type_js = "2 days"; }
 
-    fetch(`${MY_SERVER}books/get`)
-    .then(response => {
-        // Check if the response status is OK (200)
-        if (response.ok) {
-        // Parse the JSON response
-        return response.json();
-        } else {
-        throw new Error('Failed to fetch data');
-        }
-    })
-    .then(data => {
-        // Handle the JSON data and save it to the books array
-        books = data; // Assuming the JSON data is an array of books
-        console.log(books);
-
-        // You can now work with the 'books' array as needed
-    })
-    .catch(error => {
-        // Handle any errors that occurred during the fetch
-        console.error('Error:', error);
-    });
-
+        return books;
+    } catch (error) {
+        console.error('Error fetching books:', error);
+        throw error;
     }
-async function loadLoans(){
+}
+const get_data_customers = async () => {
+    try {
+        const res = await axios.get(`${MY_SERVER}customers/get`);
+        customers = res.data;
+        return customers;
+    } catch (error) {
+        console.error('Error fetching customers:', error);
+        throw error;
+    }
+}
+const get_data_loans = async () => {
+    try {
+        const res = await axios.get(`${MY_SERVER}loans/get`);
+        loans = res.data;
+        return loans;
+    } catch (error) {
+        console.error('Error fetching loans:', error);
+        throw error;
+    }
+}
+const displayBooks = async () => {
+    const booksContainer = document.getElementById('display');
+    try {
+        const booksData = await get_data_books();
 
-    fetch(`${MY_SERVER}loans/get`)
-        .then(response => {
-            // Check if the response status is OK (200)
-            if (response.ok) {
-            // Parse the JSON response
-            return response.json();
-            } else {
-            throw new Error('Failed to fetch data');
-            }
-        })
-        .then(data => {
-            // Handle the JSON data and save it to the books array
-            loans = data; // Assuming the JSON data is an array of books
-            console.log(loans);
+        // Create an HTML string to display the data
+        const booksHTML = booksData.map(book => `
+        <p>${book.id}
+        ${book.name}
+        ${book.author}
+        ${book.year_published}
+        ${book.loan_type === 1 ? "10 days" : (book.loan_type === 2 ? "5 days" : "2 days")}
+        <button class ='btn btn-danger' onClick= "del_book(${book.id})">Delete</Button>
+        <button class ='btn btn-success'>Update</Button></p>
+        `).join('');
 
-            // You can now work with the 'books' array as needed
-        })
-        .catch(error => {
-            // Handle any errors that occurred during the fetch
-            console.error('Error:', error);
+        // Set the innerHTML of the container element
+        booksContainer.innerHTML = booksHTML;
+    } catch (error) {
+        console.error('Error displaying books:', error);
+    }
+}
+const displayCustomers = async () => {
+    const customersContainer = document.getElementById('display');
+    try {
+        const customersData = await get_data_customers();
+
+        // Create an HTML string to display the data
+        const customersHTML = customersData.map(customer => `
+        <p>${customer.id}
+        ${customer.name}
+        ${customer.city}
+        ${customer.age}
+        <button class ='btn btn-danger' onClick= "del_book(${customer.id})">Delete</Button>
+        <button class ='btn btn-success'>Update</Button></p>
+        </p>
+        `).join('');
+
+        // Set the innerHTML of the container element
+        customersContainer.innerHTML = customersHTML;
+    } catch (error) {
+        console.error('Error displaying customers:', error);
+    }
+}
+const displayLoans = async () => {
+    const loansContainer = document.getElementById('display');
+    try {
+        const loansData = await get_data_loans();
+        const customersData = await get_data_customers();
+        const booksData = await get_data_books();
+
+        // Create an object to map customer IDs to names
+        const customerMap = {};
+        customersData.forEach(customer => {
+            customerMap[customer.id] = customer.name;
         });
 
-        }
-async function loadCustomers(){
+        // Create an object to map book IDs to names
+        const bookMap = {};
+        booksData.forEach(book => {
+            bookMap[book.id] = book.name;
+        });
 
-    fetch(`${MY_SERVER}customers/get`)
-    .then(response => {
-        // Check if the response status is OK (200)
-        if (response.ok) {
-        // Parse the JSON response
-        return response.json();
-        } else {
-        throw new Error('Failed to fetch data');
-        }
-    })
-    .then(data => {
-        // Handle the JSON data and save it to the books array
-        customers = data; // Assuming the JSON data is an array of books
-        console.log(customers);
+        // Create an HTML string to display the data
+        const loansHTML = loansData.map(loan => `
+        <p>${loan.id}
+        ${customerMap[loan.customer_id]}
+        ${bookMap[loan.book_id]}
+        ${loan.loan_date}
+        ${loan.return_date}
+        </p>
+        `).join('');
 
-        // You can now work with the 'books' array as needed
-    })
-    .catch(error => {
-        // Handle any errors that occurred during the fetch
-        console.error('Error:', error);
-    });
-
+        // Set the innerHTML of the container element
+        loansContainer.innerHTML = loansHTML;
+    } catch (error) {
+        console.error('Error displaying loans:', error);
     }
-function loadAllData (){
-    loadBooks();
-    loadLoans();
-    loadCustomers();
+}
+
+function get_all_data(){
+    get_data_books();
+    get_data_customers();
+    get_data_loans();
+}
+get_all_data()
+
+const del_book = async (id) => {
+    try {
+        const response = await axios.delete(`${MY_SERVER}/books/delete/${id}`);
+        console.log(response.data); // Log the success message or handle it as needed
+        // Optionally, you can refresh the books list or update the UI after a successful delete
+        displayBooks(); // Example: Refresh the books list
+    } catch (error) {
+        console.error('Error deleting book:', error);
     }
+}
+const del_customer = async (id) => {
+    try {
+        const response = await axios.delete(`${MY_SERVER}/books/customers/${id}`);
+        console.log(response.data); 
+        
+        displayCustomers(); 
+    } catch (error) {
+        console.error('Error deleting book:', error);
+    }
+}
+const add_book = async () => {
+    // Get the input values
+    const name = boo_name.value;
+    const author = boo_author.value;
+    const year_published = boo_year_published.value; // Make sure to use .value if this is an input element
+    const loan_type = boo_loan_type.value; // Make sure to use .value if this is an input element
+    try {
+        // Send a POST request to add the book
+        const response = await axios.post(`${MY_SERVER}/books/post`, {
+            name: name,
+            author: author,
+            year_published: year_published,
+            loan_type: loan_type,
+        });
+       console.log('Book added successfully:', response.data);
+           } catch (error) {
+          console.error('Error adding book:', error);
+    }
+}
 
 
-loadAllData();
     </script>
 </body>
 </html>
