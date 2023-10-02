@@ -7,7 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="../static/function.js"></script>
 </head>
 <body>
     <h1>Welcome to the Library</h1>
@@ -15,16 +17,30 @@
     <button onclick="displayLoans()">Show Loans</button>
     <button onclick="displayCustomers()">Show customers</button>
     <div id="display"></div>
-    <h1>Add a Book</h1>
-    Name of Book<input type ="text" id="boo_name"><br>
-    Author of Book<input type ="text" id="boo_author"><br>
-    Year of publication<input type ="text" id="boo_year_published"><br>
-    Book Loan Period <select name="boo_loan_type" id="boo_loan_type">
-        <option value="1">10 days</option>
-        <option value="2">5 days</option>
-        <option value="3">2 days</option>
-    </select>
-    <button class="btn btn-primary" onclick="add_book()">Add</button><br>
+
+    <button class="btn btn-primary" onclick="showBookForm()">Press to add Book </button><br>
+    <button class="btn btn-primary" onclick="showCustomerForm()">Press to add Customer </button><br>
+    <button class="btn btn-primary" onclick="showLoanForm()">Press to add Loan </button><br>
+    
+    <div id="bookForm" style="display: none;">
+        Name of Book <input type="text" id="boo_name"><br>
+        Author of Book <input type="text" id="boo_author"><br>
+        Year of publication <input type="text" id="boo_year_published"><br>
+        Book Loan Period
+        <select name="boo_loan_type" id="boo_loan_type">
+            <option value="1">10 days</option>
+            <option value="2">5 days</option>
+            <option value="3">2 days</option>
+        </select>
+        <button class="btn btn-primary" onclick="add_book()">Add</button><br>
+    </div>
+    <div id="customerForm" style="display: none;">
+        Name of Customer <input type="text" id="cust_name"><br>
+        City of Customer <input type="text" id="cust_city"><br>
+        Age of Customer <input type="text" id="cust_age"><br>
+        
+        <button class="btn btn-primary" onclick="add_customer()">Add</button><br>
+    </div>
     <script>
 const MY_SERVER = "http://127.0.0.1:5000/"
 let index= 0
@@ -71,85 +87,8 @@ const get_data_loans = async () => {
         throw error;
     }
 }
-const displayBooks = async () => {
-    const booksContainer = document.getElementById('display');
-    try {
-        const booksData = await get_data_books();
 
-        // Create an HTML string to display the data
-        const booksHTML = booksData.map(book => `
-        <p>${book.id}
-        ${book.name}
-        ${book.author}
-        ${book.year_published}
-        ${book.loan_type === 1 ? "10 days" : (book.loan_type === 2 ? "5 days" : "2 days")}
-        <button class ='btn btn-danger' onClick= "del_book(${book.id})">Delete</Button>
-        <button class ='btn btn-success'>Update</Button></p>
-        `).join('');
 
-        // Set the innerHTML of the container element
-        booksContainer.innerHTML = booksHTML;
-    } catch (error) {
-        console.error('Error displaying books:', error);
-    }
-}
-const displayCustomers = async () => {
-    const customersContainer = document.getElementById('display');
-    try {
-        const customersData = await get_data_customers();
-
-        // Create an HTML string to display the data
-        const customersHTML = customersData.map(customer => `
-        <p>${customer.id}
-        ${customer.name}
-        ${customer.city}
-        ${customer.age}
-        <button class ='btn btn-danger' onClick= "del_book(${customer.id})">Delete</Button>
-        <button class ='btn btn-success'>Update</Button></p>
-        </p>
-        `).join('');
-
-        // Set the innerHTML of the container element
-        customersContainer.innerHTML = customersHTML;
-    } catch (error) {
-        console.error('Error displaying customers:', error);
-    }
-}
-const displayLoans = async () => {
-    const loansContainer = document.getElementById('display');
-    try {
-        const loansData = await get_data_loans();
-        const customersData = await get_data_customers();
-        const booksData = await get_data_books();
-
-        // Create an object to map customer IDs to names
-        const customerMap = {};
-        customersData.forEach(customer => {
-            customerMap[customer.id] = customer.name;
-        });
-
-        // Create an object to map book IDs to names
-        const bookMap = {};
-        booksData.forEach(book => {
-            bookMap[book.id] = book.name;
-        });
-
-        // Create an HTML string to display the data
-        const loansHTML = loansData.map(loan => `
-        <p>${loan.id}
-        ${customerMap[loan.customer_id]}
-        ${bookMap[loan.book_id]}
-        ${loan.loan_date}
-        ${loan.return_date}
-        </p>
-        `).join('');
-
-        // Set the innerHTML of the container element
-        loansContainer.innerHTML = loansHTML;
-    } catch (error) {
-        console.error('Error displaying loans:', error);
-    }
-}
 
 function get_all_data(){
     get_data_books();
@@ -170,7 +109,7 @@ const del_book = async (id) => {
 }
 const del_customer = async (id) => {
     try {
-        const response = await axios.delete(`${MY_SERVER}/books/customers/${id}`);
+        const response = await axios.delete(`${MY_SERVER}/customers/delete/${id}`);
         console.log(response.data); 
         
         displayCustomers(); 
@@ -178,25 +117,24 @@ const del_customer = async (id) => {
         console.error('Error deleting book:', error);
     }
 }
-const add_book = async () => {
-    // Get the input values
-    const name = boo_name.value;
-    const author = boo_author.value;
-    const year_published = boo_year_published.value; // Make sure to use .value if this is an input element
-    const loan_type = boo_loan_type.value; // Make sure to use .value if this is an input element
+
+const updateCustomer = async (id, newName, newCity, newAge) => {
     try {
-        // Send a POST request to add the book
-        const response = await axios.post(`${MY_SERVER}/books/post`, {
-            name: name,
-            author: author,
-            year_published: year_published,
-            loan_type: loan_type,
+        const response = await axios.patch(`${MY_SERVER}/customers/update/${id}`, {
+            name: newName,
+            city: newCity,
+            age: newAge
         });
-       console.log('Book added successfully:', response.data);
-           } catch (error) {
-          console.error('Error adding book:', error);
+        console.log(response.data); 
+        
+        displayCustomers(); 
+    } catch (error) {
+        console.error('Error updating customer:', error);
     }
 }
+
+
+
 
 
     </script>
