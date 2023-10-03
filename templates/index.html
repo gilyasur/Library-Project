@@ -9,18 +9,57 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="../static/function.js"></script>
+    <script src="../static/function.js" defer></script>
+    <style>
+        .btn-container {
+        display: flex; /* Use flexbox to align buttons horizontally */
+        gap: 10px; /* Adjust the gap between buttons as needed */
+        margin-bottom: 10px; /* Add some spacing between button rows */
+    }
+    .btn1{
+
+margin-right: 70px;
+
+}
+
+.btn2{
+
+margin-left: 70px;
+
+}
+#bookForm {
+    margin: auto;
+  width: 50%;
+  border: 3px solid green;
+  padding: 10px;
+}
+#customerForm {
+    margin: auto;
+  width: 50%;
+  border: 3px solid green;
+  padding: 10px;
+}
+
+    </style>
 </head>
 <body>
     <h1>Welcome to the Library</h1>
-    <button onclick="displayBooks()">Books List</button>
-    <button onclick="displayLoans()">Show Loans</button>
-    <button onclick="displayCustomers()">Show customers</button>
+    
+    <div class="btn-container">
+        <div class ="btn1">
+        <button class="btn btn-danger" onclick="displayBooks()">Books List</button>
+        <button class="btn btn-info" onclick="displayLoans()"> Loans List</button>
+        <button class="btn btn-warning" onclick="displayCustomers()"> Customers List</button>
+    </div>
+    <div class ="btn2">
+        <button class="btn btn-danger" onclick="showBookForm()">Press to add Book </button>
+        <button class="btn btn-info" onclick="showLoanForm()">Press to add Loan </button>
+        <button class="btn btn-warning" onclick="showCustomerForm()">Press to add Customer </button>
+    </div>
+    </div>
     <div id="display"></div>
 
-    <button class="btn btn-primary" onclick="showBookForm()">Press to add Book </button><br>
-    <button class="btn btn-primary" onclick="showCustomerForm()">Press to add Customer </button><br>
-    <button class="btn btn-primary" onclick="showLoanForm()">Press to add Loan </button><br>
+   
     
     <div id="bookForm" style="display: none;">
         Name of Book <input type="text" id="boo_name"><br>
@@ -41,98 +80,28 @@
         
         <button class="btn btn-primary" onclick="add_customer()">Add</button><br>
     </div>
+    <h1>Add Loan</h1>
+    <form id="addLoanForm">
+        <label for="customerDropdown">Select Customer:</label>
+        <select id="customerDropdown" required>
+            <!-- Customer options will be populated dynamically via JavaScript -->
+        </select>
+        <br>
+
+        <label for="bookDropdown">Select Book:</label>
+        <select id="bookDropdown" required>
+            <!-- Book options will be populated dynamically via JavaScript -->
+        </select>
+        <br>
+
+        <label for="loanDate">Loan Date:</label>
+        <input type="date" id="loanDate" required>
+        <br>
+
+
+        <button type="submit" onclick="createLoan()">Add Loan</button>
+    </form>
     <script>
-const MY_SERVER = "http://127.0.0.1:5000/"
-let index= 0
-let books = []
-let customers = []
-let loans = []
-let loan_type_js = ""
-const get_data_books = async () => {
-    try {
-        const res = await axios.get(`${MY_SERVER}books/get`);
-        const books = res.data;
-        console.log(books); // Log the API response
-
-        // Default value for loan_type_js if loan_type is missing
-        const loanType = books.loan_type || 0; // Assuming 0 is a suitable default
-        
-        if (loanType == 1) { loan_type_js = "10 days"; }
-        else if (loanType == 2) { loan_type_js = "5 days"; }
-        else { loan_type_js = "2 days"; }
-
-        return books;
-    } catch (error) {
-        console.error('Error fetching books:', error);
-        throw error;
-    }
-}
-const get_data_customers = async () => {
-    try {
-        const res = await axios.get(`${MY_SERVER}customers/get`);
-        customers = res.data;
-        return customers;
-    } catch (error) {
-        console.error('Error fetching customers:', error);
-        throw error;
-    }
-}
-const get_data_loans = async () => {
-    try {
-        const res = await axios.get(`${MY_SERVER}loans/get`);
-        loans = res.data;
-        return loans;
-    } catch (error) {
-        console.error('Error fetching loans:', error);
-        throw error;
-    }
-}
-
-
-
-function get_all_data(){
-    get_data_books();
-    get_data_customers();
-    get_data_loans();
-}
-get_all_data()
-
-const del_book = async (id) => {
-    try {
-        const response = await axios.delete(`${MY_SERVER}/books/delete/${id}`);
-        console.log(response.data); // Log the success message or handle it as needed
-        // Optionally, you can refresh the books list or update the UI after a successful delete
-        displayBooks(); // Example: Refresh the books list
-    } catch (error) {
-        console.error('Error deleting book:', error);
-    }
-}
-const del_customer = async (id) => {
-    try {
-        const response = await axios.delete(`${MY_SERVER}/customers/delete/${id}`);
-        console.log(response.data); 
-        
-        displayCustomers(); 
-    } catch (error) {
-        console.error('Error deleting book:', error);
-    }
-}
-
-const updateCustomer = async (id, newName, newCity, newAge) => {
-    try {
-        const response = await axios.patch(`${MY_SERVER}/customers/update/${id}`, {
-            name: newName,
-            city: newCity,
-            age: newAge
-        });
-        console.log(response.data); 
-        
-        displayCustomers(); 
-    } catch (error) {
-        console.error('Error updating customer:', error);
-    }
-}
-
 
 
 

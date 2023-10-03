@@ -13,10 +13,10 @@ books = Blueprint('books', __name__, url_prefix='/books')
 def get_books():
     res = []
     for book in Book.query.all():  # Fix the query syntax
-        res.append({"id": book.id, "name": book.name,"author": book.author,"loan_type": book.loan_type,"year_published": book.year_published})
+        res.append({"id": book.id, "name": book.name,"author": book.author,"loan_type": book.loan_type,"year_published": book.year_published,"book_status":book.book_status})
     return json.dumps(res)
 
-from flask import jsonify, request
+
 
 @books.route('/post', methods=["POST"])
 def add_books():

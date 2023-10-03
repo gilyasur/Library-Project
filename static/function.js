@@ -1,3 +1,96 @@
+const MY_SERVER = "http://127.0.0.1:2001/"
+let index= 0
+let books = []
+let customers = []
+let loans = []
+let loan_type_js = ""
+const get_data_books = async () => {
+    try {
+        const res = await axios.get(`${MY_SERVER}books/get`);
+        const books = res.data;
+        console.log(books); // Log the API response
+
+        // Default value for loan_type_js if loan_type is missing
+        const loanType = books.loan_type || 0; // Assuming 0 is a suitable default
+        
+        if (loanType == 1) { loan_type_js = "10 days"; }
+        else if (loanType == 2) { loan_type_js = "5 days"; }
+        else { loan_type_js = "2 days"; }
+
+        return books;
+    } catch (error) {
+        console.error('Error fetching books:', error);
+        throw error;
+    }
+}
+const get_data_customers = async () => {
+    try {
+        const res = await axios.get(`${MY_SERVER}customers/get`);
+        customers = res.data;
+        return customers;
+    } catch (error) {
+        console.error('Error fetching customers:', error);
+        throw error;
+    }
+}
+const get_data_loans = async () => {
+    try {
+        const res = await axios.get(`${MY_SERVER}loans/get`);
+        loans = res.data;
+        return loans;
+    } catch (error) {
+        console.error('Error fetching loans:', error);
+        throw error;
+    }
+}
+
+
+
+function get_all_data(){
+    get_data_books();
+    get_data_customers();
+    get_data_loans();
+}
+get_all_data()
+
+const del_book = async (id) => {
+    try {
+        const response = await axios.delete(`${MY_SERVER}/books/delete/${id}`);
+        console.log(response.data); // Log the success message or handle it as needed
+        // Optionally, you can refresh the books list or update the UI after a successful delete
+        displayBooks(); // Example: Refresh the books list
+    } catch (error) {
+        console.error('Error deleting book:', error);
+    }
+}
+const del_customer = async (id) => {
+    try {
+        const response = await axios.delete(`${MY_SERVER}/customers/delete/${id}`);
+        console.log(response.data); 
+        
+        displayCustomers(); 
+    } catch (error) {
+        console.error('Error deleting book:', error);
+    }
+}
+
+const updateCustomer = async (id, newName, newCity, newAge) => {
+    try {
+        const response = await axios.patch(`${MY_SERVER}/customers/update/${id}`, {
+            name: newName,
+            city: newCity,
+            age: newAge
+        });
+        console.log(response.data); 
+        
+        displayCustomers(); 
+    } catch (error) {
+        console.error('Error updating customer:', error);
+    }
+}
+
+
+
 
 function showSuccessToast(message) {
     Toastify({
@@ -97,6 +190,109 @@ const add_customer = async () => {
     }
 }
 
+
+// Function to create a loan
+const createLoan = async () => {
+    try {
+        const customerDropdown = document.getElementById('customerDropdown');
+        const bookDropdown = document.getElementById('bookDropdown');
+        const loanDateInput = document.getElementById('loanDate');
+
+        // Get selected customer and book IDs from the dropdowns
+        const selectedCustomerId = customerDropdown.value;
+        const selectedBookId = bookDropdown.value;
+
+        // Get loan date and return date from the input fields
+        const loanDate = loanDateInput.value;
+
+        // Create the loan object
+        const newLoan = {
+            customer_id: selectedCustomerId,
+            book_id: selectedBookId,
+            loan_date: loanDate,
+        };
+
+        // Send the new loan data to your server or API using Axios
+        const response = await axios.post(`${MY_SERVER}/loans/post`, newLoan);
+
+        // Optionally, clear the form fields
+        loanDateInput.value = '';
+
+        // Check the response status and display an alert accordingly
+        if (response.status === 201) {
+            showSuccessToast('Loan added successfully');
+        } else {
+            console.error('Error adding loan:', response.data.error);
+            showErrorToast('Error adding loan. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error adding loan:', error);
+        showErrorToast('Error adding loan. Please try again.');
+    }
+};
+
+
+// Function to populate customer and book dropdowns
+const populateDropdowns = async () => {
+    const customerDropdown = document.getElementById('customerDropdown');
+    const bookDropdown = document.getElementById('bookDropdown');
+    const customersData = await get_data_customers();
+    const booksData = await get_data_books();
+
+    // Populate the customer dropdown
+    customersData.forEach(customer => {
+        const option = document.createElement('option');
+        option.value = customer.id;
+        option.textContent = customer.name;
+        customerDropdown.appendChild(option);
+    });
+
+    // Populate the book dropdown
+    booksData.forEach(book => {
+        const option = document.createElement('option');
+        option.value = book.id;
+        option.textContent = book.name;
+        bookDropdown.appendChild(option);
+    });
+};
+
+// Call the populateDropdowns function to fill the dropdowns with data
+populateDropdowns();
+
+
+// Populate customer and book options
+
+
+
+
+
+// const add_loan = async (bookId, customerId, loanDate) => {
+//     // Validation: Check if any of the required fields are empty
+//     if (!bookId || !customerId || !loanDate) {
+//         showErrorToast('Please fill in all the required fields.');
+//         return; // Exit the function early if any field is empty
+//     }
+
+//     try {
+//         // Send a POST request to add the loan
+//         const response = await axios.post(`${MY_SERVER}/loans/post`, {
+//             book_id: bookId,
+//             customer_id: customerId,
+//             loan_date: loanDate
+//         });
+
+//         // Display a success toast with loan details
+//         showSuccessToast(`Loan added successfully for book ID: ${bookId} and customer ID: ${customerId}`);
+//     } catch (error) {
+//         console.error('Error adding loan:', error);
+
+//         // Display an error toast if there's an error
+//         showErrorToast('Error adding loan. Please try again.');
+//     }
+// };
+
+
+
 const displayBooks = async () => {
     const booksContainer = document.getElementById('display');
     try {
@@ -113,7 +309,9 @@ const displayBooks = async () => {
                     <th>ID</th>
                     <th>Name</th>
                     <th>Author</th>
+                    <th>Book status</th>
                     <th>Year Published</th>
+                    
                     <th>Loan Type Period</th>
                     <th>Action</th>
                 </tr>
@@ -135,6 +333,10 @@ const displayBooks = async () => {
 
             const authorCell = document.createElement('td');
             authorCell.textContent = book.author;
+            
+            const bookstatusCell = document.createElement('td');
+            bookstatusCell.textContent = book.book_status ? 'On Loan' : 'In Library';;
+       
 
             const yearPublishedCell = document.createElement('td');
             yearPublishedCell.textContent = book.year_published;
@@ -158,6 +360,7 @@ const displayBooks = async () => {
             row.appendChild(idCell);
             row.appendChild(nameCell);
             row.appendChild(authorCell);
+            row.appendChild(bookstatusCell);
             row.appendChild(yearPublishedCell);
             row.appendChild(loanTypeCell);
             row.appendChild(actionCell);
@@ -332,10 +535,18 @@ const displayLoans = async () => {
 }
 
 function showBookForm() {
-    var form = document.getElementById("bookForm");
-    form.style.display = "block";
+    var bookForm = document.getElementById("bookForm");
+    var customerForm = document.getElementById("customerForm");
+
+    bookForm.style.display = "block";
+    customerForm.style.display = "none"; // Hide the customer form
 }
+
 function showCustomerForm() {
-    var form = document.getElementById("customerForm");
-    form.style.display = "block";
+    var bookForm = document.getElementById("bookForm");
+    var customerForm = document.getElementById("customerForm");
+
+    bookForm.style.display = "none"; // Hide the book form
+    customerForm.style.display = "block";
 }
+
