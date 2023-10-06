@@ -50,13 +50,13 @@ def update_customer(id):
     try:
         data = request.json  # JSON request body containing fields to update
         
-        # Check if the book with the specified ID exists
+        # Check if the customer with the specified ID exists
         cust = Customer.query.get(id)
         
         if not cust:
-            return jsonify({"error": "Customer not found"}), 404  # Return a 404 response if the book doesn't exist
+            return jsonify({"error": "Customer not found"}), 404  # Return a 404 response if the customer doesn't exist
         
-        # Update the book fields based on the data provided in the request
+        # Update the customer fields based on the data provided in the request
         if "name" in data:
             cust.name = data["name"]
         if "city" in data:
@@ -64,7 +64,6 @@ def update_customer(id):
         if "age" in data:
             cust.age = data["age"]
 
-        
         db.session.commit()
         
         return jsonify({"message": "Customer updated successfully"}), 200  # Return a success response with status code 200

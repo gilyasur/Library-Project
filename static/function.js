@@ -74,20 +74,44 @@ const del_customer = async (id) => {
     }
 }
 
-const updateCustomer = async (id, newName, newCity, newAge) => {
+const upd_customer = async () => {
     try {
-        const response = await axios.patch(`${MY_SERVER}/customers/update/${id}`, {
+        // Get values from form fields
+        const id = document.getElementById("upd_cust_id").value;
+        const newName = document.getElementById("upd_cust_name").value;
+        const newCity = document.getElementById("upd_cust_city").value;
+        const newAge = document.getElementById("upd_cust_age").value;
+        console.log("ID:", id);
+        console.log("Name:", newName);
+        console.log("City:", newCity);
+        console.log("Age:", newAge);
+
+        // Create an object with the fields to update
+        const data = {
             name: newName,
             city: newCity,
             age: newAge
-        });
-        console.log(response.data); 
-        
-        displayCustomers(); 
+        };
+
+        const response = await axios.patch(`${MY_SERVER}/customers/update/${id}`, data);
+        console.log(response.data);
+
+        // Check the response status code to handle success or failure
+        if (response.status === 200) {
+            console.log('Customer updated successfully');
+            // Optionally, you can refresh the customer list after updating
+            // displayCustomers();
+        } else {
+            console.error('Failed to update customer:', response.data.error);
+        }
     } catch (error) {
         console.error('Error updating customer:', error);
     }
 }
+
+
+
+
 
 
 
@@ -260,36 +284,7 @@ const populateDropdowns = async () => {
 populateDropdowns();
 
 
-// Populate customer and book options
 
-
-
-
-
-// const add_loan = async (bookId, customerId, loanDate) => {
-//     // Validation: Check if any of the required fields are empty
-//     if (!bookId || !customerId || !loanDate) {
-//         showErrorToast('Please fill in all the required fields.');
-//         return; // Exit the function early if any field is empty
-//     }
-
-//     try {
-//         // Send a POST request to add the loan
-//         const response = await axios.post(`${MY_SERVER}/loans/post`, {
-//             book_id: bookId,
-//             customer_id: customerId,
-//             loan_date: loanDate
-//         });
-
-//         // Display a success toast with loan details
-//         showSuccessToast(`Loan added successfully for book ID: ${bookId} and customer ID: ${customerId}`);
-//     } catch (error) {
-//         console.error('Error adding loan:', error);
-
-//         // Display an error toast if there's an error
-//         showErrorToast('Error adding loan. Please try again.');
-//     }
-// };
 
 
 
@@ -309,7 +304,7 @@ const displayBooks = async () => {
                     <th>ID</th>
                     <th>Name</th>
                     <th>Author</th>
-                    <th>Book status</th>
+                 
                     <th>Year Published</th>
                     
                     <th>Loan Type Period</th>
@@ -334,8 +329,7 @@ const displayBooks = async () => {
             const authorCell = document.createElement('td');
             authorCell.textContent = book.author;
             
-            const bookstatusCell = document.createElement('td');
-            bookstatusCell.textContent = book.book_status ? 'On Loan' : 'In Library';;
+            
        
 
             const yearPublishedCell = document.createElement('td');
@@ -360,7 +354,7 @@ const displayBooks = async () => {
             row.appendChild(idCell);
             row.appendChild(nameCell);
             row.appendChild(authorCell);
-            row.appendChild(bookstatusCell);
+           
             row.appendChild(yearPublishedCell);
             row.appendChild(loanTypeCell);
             row.appendChild(actionCell);
@@ -430,6 +424,8 @@ const displayCustomers = async () => {
             const updateButton = document.createElement('button');
             updateButton.className = 'btn btn-success';
             updateButton.textContent = 'Update';
+            updateButton.addEventListener('click', () => showCustomerupdForm(customer.id));
+       
 
             actionCell.appendChild(deleteButton);
             actionCell.appendChild(updateButton);
@@ -487,6 +483,8 @@ const displayLoans = async () => {
                     <th>Book Name</th>
                     <th>Loan Date</th>
                     <th>Return Date</th>
+                    <th>Loan Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
         `;
@@ -513,11 +511,35 @@ const displayLoans = async () => {
             const returnDateCell = document.createElement('td');
             returnDateCell.textContent = loan.return_date;
 
+            const LoanStatusCell = document.createElement('td');
+            LoanStatusCell.textContent = loan.loan_status ? 'On Loan' : 'Returned';
+
+            const actionCell = document.createElement('td');
+            const ReturnedButton = document.createElement('button');
+            ReturnedButton.className = 'btn btn-danger';
+            ReturnedButton.textContent = 'Return Book';
+
+            ReturnedButton.addEventListener('click', async () => {
+                try {
+                    
+                    await returnLoan(loan.id);
+                    // Update the UI to reflect the returned status
+                    LoanStatusCell.textContent = 'Returned';
+                    ReturnedButton.disabled = true; // Disable the button after returning
+                } catch (error) {
+                    console.error('Error returning loan:', error);
+                }
+            });
+
+            actionCell.appendChild(ReturnedButton);
+
             row.appendChild(idCell);
             row.appendChild(customerNameCell);
             row.appendChild(bookNameCell);
             row.appendChild(loanDateCell);
             row.appendChild(returnDateCell);
+            row.appendChild(LoanStatusCell);
+            row.appendChild(actionCell);
 
             tableBody.appendChild(row);
         });
@@ -531,6 +553,8 @@ const displayLoans = async () => {
 
     } catch (error) {
         console.error('Error displaying loans:', error);
+        // Display an error message to the user if needed
+        loansContainer.innerHTML = 'Error displaying loans. Please try again later.';
     }
 }
 
@@ -539,6 +563,7 @@ function showBookForm() {
     var customerForm = document.getElementById("customerForm");
 
     bookForm.style.display = "block";
+    customerupdForm.style.display = "none";
     customerForm.style.display = "none"; // Hide the customer form
 }
 
@@ -547,6 +572,32 @@ function showCustomerForm() {
     var customerForm = document.getElementById("customerForm");
 
     bookForm.style.display = "none"; // Hide the book form
+    customerupdForm.style.display = "none";
     customerForm.style.display = "block";
 }
+
+function showCustomerupdForm(id) {
+    var bookForm = document.getElementById("bookForm");
+    var customerForm = document.getElementById("customerForm");
+    var customerupdForm = document.getElementById("customerupdForm"); // Corrected variable name
+
+    bookForm.style.display = "none";
+    customerForm.style.display = "none";
+    customerupdForm.style.display = "block";
+    document.getElementById("upd_cust_id").value = id;
+
+
+   
+}
+const returnLoan = async (id) => {
+    try {
+        await axios.put(`${MY_SERVER}loans/put/${id}`);
+        console.log(id);
+        console.log("Loan updated successfully");
+        
+    } catch (error) {
+        console.error("Error updating loan:", error);
+    }
+}
+
 

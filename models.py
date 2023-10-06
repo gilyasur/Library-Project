@@ -8,11 +8,11 @@ class Book(db.Model):
     __tablename__ = 'books'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), nullable=False,)
     author = db.Column(db.String(255), nullable=False)
     year_published = db.Column(db.Integer, nullable=False)
     loan_type = db.Column(db.Integer, nullable=False)
-    book_status = db.Column(db.Boolean, default=False)
+
 
     loans = db.relationship('Loan', backref='book', lazy=True)
 
@@ -21,6 +21,10 @@ class Book(db.Model):
         self.author = author
         self.year_published = year_published
         self.loan_type = loan_type
+
+    def is_loaned(self):
+        # Check if there is an active loan for this book (loan_status = True)
+        return any(loan.loan_status for loan in self.loans)
 
 class Customer(db.Model):
     __tablename__ = 'customers'
@@ -42,9 +46,10 @@ class Loan(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False, unique=True)
     loan_date = db.Column(db.Date, nullable=False)
     return_date = db.Column(db.Date)
+    loan_status = db.Column(db.Boolean, default=True)
 
     def __init__(self, customer_id, book_id, loan_date, return_date=None):
         self.customer_id = customer_id
@@ -59,5 +64,5 @@ db.ForeignKeyConstraint(['book_id'], ['books.id'])
 # Adding unique constraint for customer names
 db.UniqueConstraint('name', name='unique_customer_name')
 
-# Adding check constraint for book_status (should be 0 or 1)
-db.CheckConstraint('book_status IN (0, 1)', name='check_book_status')
+# Adding check constraint for loan_status (should be 0 or 1)
+db.CheckConstraint('loan_status IN (0, 1)', name='check_loan_status')

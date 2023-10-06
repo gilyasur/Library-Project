@@ -39,6 +39,12 @@ margin-left: 70px;
   border: 3px solid green;
   padding: 10px;
 }
+#customerupdForm {
+    margin: auto;
+  width: 50%;
+  border: 3px solid green;
+  padding: 10px;
+}
 
     </style>
 </head>
@@ -53,7 +59,7 @@ margin-left: 70px;
     </div>
     <div class ="btn2">
         <button class="btn btn-danger" onclick="showBookForm()">Press to add Book </button>
-        <button class="btn btn-info" onclick="showLoanForm()">Press to add Loan </button>
+
         <button class="btn btn-warning" onclick="showCustomerForm()">Press to add Customer </button>
     </div>
     </div>
@@ -62,6 +68,7 @@ margin-left: 70px;
    
     
     <div id="bookForm" style="display: none;">
+        <h2>Add Book</h2>
         Name of Book <input type="text" id="boo_name"><br>
         Author of Book <input type="text" id="boo_author"><br>
         Year of publication <input type="text" id="boo_year_published"><br>
@@ -74,12 +81,24 @@ margin-left: 70px;
         <button class="btn btn-primary" onclick="add_book()">Add</button><br>
     </div>
     <div id="customerForm" style="display: none;">
+        <h2>Add Customer</h2>
         Name of Customer <input type="text" id="cust_name"><br>
         City of Customer <input type="text" id="cust_city"><br>
         Age of Customer <input type="text" id="cust_age"><br>
         
         <button class="btn btn-primary" onclick="add_customer()">Add</button><br>
     </div>
+    
+    <div id="customerupdForm" style="display: none;">
+        <h2>Update a Customer</h2>
+        ID of Customer <input type="text" id="upd_cust_id"><br>
+        Name of Customer <input type="text" id="upd_cust_name"><br>
+        City of Customer <input type="text" id="upd_cust_city"><br>
+        Age of Customer <input type="text" id="upd_cust_age" ><br>
+        
+        <button class="btn btn-primary" onclick="upd_customer()">Add</button><br>
+    </div>
+    
     <h1>Add Loan</h1>
     <form id="addLoanForm">
         <label for="customerDropdown">Select Customer:</label>
@@ -101,10 +120,8 @@ margin-left: 70px;
 
         <button type="submit" onclick="createLoan()">Add Loan</button>
     </form>
+
     <script>
-
-
-
 
     </script>
 </body>

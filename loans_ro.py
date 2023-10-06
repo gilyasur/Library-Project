@@ -23,7 +23,8 @@ def get_loans():
             "customer_id": loan.customer_id,
             "book_id": loan.book_id,
             "loan_date": loan.loan_date.strftime("%Y-%m-%d"),  # Convert loan_date as well
-            "return_date": return_date_str  # Include the formatted return_date
+            "return_date": return_date_str ,
+             "loan_status": loan.loan_status # Include the formatted return_date
         })
     
     return jsonify(res)  # Use jsonify to return a JSON response
@@ -37,14 +38,17 @@ def add_loans():
     try:
         data = request.json
 
-        # Update the book's status to indicate that it's currently on loan
+        # Check if the book is already loaned
         book = Book.query.get(data["book_id"])
-        if book:
-            book.book_status = True
+        if not book:
+            return jsonify({"error": "Book not found"}), 404
+
+        if book.is_loaned():
+            return jsonify({"error": "Book is already loaned"}), 400
 
         # Parse loan_date and return_date as Python date objects
         loan_date = datetime.strptime(data["loan_date"], "%Y-%m-%d")
-        
+
         # Determine the loan type and set the return_date accordingly
         if book.loan_type == 1:
             return_date = loan_date + timedelta(days=10)
@@ -63,6 +67,7 @@ def add_loans():
         return jsonify({"message": "Loan added successfully"}), 201
     except Exception as e:
         return jsonify({"error": "Failed to add loan", "details": str(e)}), 400
+
     
 @loans.route('/delete/<int:id>', methods=["DELETE"])  # Include 'id' as a route parameter
 def del_loans(id):
@@ -80,29 +85,22 @@ def del_loans(id):
     except Exception as e:
         return jsonify({"error": "Failed to delete loan", "details": str(e)}), 500  # Return an error response with status code 500 (Internal Server Error) if an exception occurs
 
-@loans.route('/update/<int:id>', methods=["PATCH"])  # Include 'id' as a route parameter
+@loans.route('/put/<int:id>', methods=["put"])
 def update_loan(id):
     try:
         data = request.json  # JSON request body containing fields to update
         
-        # Check if the book with the specified ID exists
-        book = Book.query.get(id)
+        # Check if the loan with the specified ID exists
+        loan = Loan.query.get(id)
+  
+        if not loan:
+            return jsonify({"error": "Loan not found"}), 404 
         
-        if not book:
-            return jsonify({"error": "Book not found"}), 404  # Return a 404 response if the book doesn't exist
-        
-        # Update the book fields based on the data provided in the request
-        if "name" in data:
-            book.name = data["name"]
-        if "author" in data:
-            book.author = data["author"]
-        if "year_published" in data:
-            book.year_published = data["year_published"]
-        if "loan_type" in data:
-            book.loan_type = data["loan_type"]
+        # Update the loan_status to True
+        loan.loan_status = True
         
         db.session.commit()
         
-        return jsonify({"message": "Book updated successfully"}), 200  # Return a success response with status code 200
+        return jsonify({"message": "Loan updated successfully"}), 200
     except Exception as e:
-        return jsonify({"error": "Failed to update book", "details": str(e)}), 500  # Return an error response with status code 500 (Internal Server Error) if an exception occurs
+        return jsonify({"error": "Failed to update loan", "details": str(e)}), 500
