@@ -88,7 +88,7 @@ def del_loans(id):
 @loans.route('/put/<int:id>', methods=["put"])
 def update_loan(id):
     try:
-        data = request.json  # JSON request body containing fields to update
+       
         
         # Check if the loan with the specified ID exists
         loan = Loan.query.get(id)
@@ -97,7 +97,7 @@ def update_loan(id):
             return jsonify({"error": "Loan not found"}), 404 
         
         # Update the loan_status to True
-        loan.loan_status = True
+        loan.loan_status = False
         
         db.session.commit()
         

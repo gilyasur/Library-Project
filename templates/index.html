@@ -45,6 +45,18 @@ margin-left: 70px;
   border: 3px solid green;
   padding: 10px;
 }
+#bookupdForm {
+    margin: auto;
+  width: 50%;
+  border: 3px solid green;
+  padding: 10px;
+}
+#loanForm {
+    margin: auto;
+  width: 50%;
+  border: 3px solid green;
+  padding: 10px;
+}
 
     </style>
 </head>
@@ -59,7 +71,7 @@ margin-left: 70px;
     </div>
     <div class ="btn2">
         <button class="btn btn-danger" onclick="showBookForm()">Press to add Book </button>
-
+        <button class="btn btn-info" onclick="showLoanForm()">Press to add Loan </button>
         <button class="btn btn-warning" onclick="showCustomerForm()">Press to add Customer </button>
     </div>
     </div>
@@ -96,11 +108,26 @@ margin-left: 70px;
         City of Customer <input type="text" id="upd_cust_city"><br>
         Age of Customer <input type="text" id="upd_cust_age" ><br>
         
-        <button class="btn btn-primary" onclick="upd_customer()">Add</button><br>
+        <button class="btn btn-primary" onclick="upd_customer()">Update</button><br>
     </div>
-    
-    <h1>Add Loan</h1>
-    <form id="addLoanForm">
+    <div id="bookupdForm" style="display: none;">
+        <h2>Update Book</h2>
+        ID of Book <input type="text" id="upd_book_id"><br>
+        Name of Book <input type="text" id="upd_book_name"><br>
+        Author of Book <input type="text" id="upd_book_author"><br>
+        Year of publication <input type="text" id="upd_book_yearPublished"><br>
+        Book Loan Period
+        <select name="boo_loan_type" id="upd_book_Loantype">
+            <option value="1">10 days</option>
+            <option value="2">5 days</option>
+            <option value="3">2 days</option>
+        </select>
+        <br>
+        <button class="btn btn-primary" onclick="upd_Book()">Update</button><br>
+    </div>
+    <div id="loanForm" style="display: none;">
+    <h2>Add Loan</h2>
+    <form id="addLoanForm" >
         <label for="customerDropdown">Select Customer:</label>
         <select id="customerDropdown" required>
             <!-- Customer options will be populated dynamically via JavaScript -->
@@ -119,6 +146,7 @@ margin-left: 70px;
 
 
         <button type="submit" onclick="createLoan()">Add Loan</button>
+    </div>
     </form>
 
     <script>

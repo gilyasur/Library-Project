@@ -98,10 +98,13 @@ const upd_customer = async () => {
 
         // Check the response status code to handle success or failure
         if (response.status === 200) {
+            showSuccessToast(`Customer Update successfully: ${newName} in city ${newCity}, at the age of ${newAge}`);
+
             console.log('Customer updated successfully');
             // Optionally, you can refresh the customer list after updating
             // displayCustomers();
         } else {
+            showErrorToast('Error Updating customer. Please try again.');
             console.error('Failed to update customer:', response.data.error);
         }
     } catch (error) {
@@ -109,17 +112,45 @@ const upd_customer = async () => {
     }
 }
 
+const upd_Book = async () => {
+    try {
+        // Get values from form fields
+        const id = document.getElementById("upd_book_id").value;
+        const newName = document.getElementById("upd_book_name").value;
+        const newAuthor = document.getElementById("upd_book_author").value;
+        const newyearPublished = document.getElementById("upd_book_yearPublished").value;
+        const newLoantype = document.getElementById("upd_book_Loantype").value;
+ 
 
+        // Create an object with the fields to update
+        const data = {
+            name: newName,
+            author: newAuthor,
+            year_published: newyearPublished,
+            loan_type : newLoantype
+        };
 
+        const response = await axios.patch(`${MY_SERVER}/books/update/${id}`, data);
+        console.log(response.data);
 
-
-
-
+        // Check the response status code to handle success or failure
+        if (response.status === 200) {
+            console.log('Book updated successfully');
+            // Optionally, you can refresh the customer list after updating
+            showSuccessToast(`Book Update successfully: ${newName} by ${newAuthor}, published in ${newyearPublished}, Loan Type: ${newLoantype}`);
+        } else {
+            showErrorToast('Error Updating book. Please try again.');
+            console.error('Failed to update Book:', response.data.error);
+        }
+    } catch (error) {
+        console.error('Error updating customer:', error);
+    }
+}
 
 function showSuccessToast(message) {
     Toastify({
         text: message,
-        duration: 3000, // Display for 3 seconds
+        duration: 2000, // Display for 3 seconds
         gravity: "top", // Top or bottom
         position: "left", // Left, center, or right
         stopOnFocus: true, // Prevent dismissing on hover
@@ -130,7 +161,7 @@ function showSuccessToast(message) {
 function showErrorToast(message) {
     Toastify({
         text: message,
-        duration: 3000, // Display for 3 seconds
+        duration: 2000, // Display for 3 seconds
         gravity: "top", // Top or bottom
         position: "left", // Left, center, or right
         stopOnFocus: true, // Prevent dismissing on hover
@@ -347,6 +378,8 @@ const displayBooks = async () => {
             const updateButton = document.createElement('button');
             updateButton.className = 'btn btn-success';
             updateButton.textContent = 'Update';
+            updateButton.addEventListener('click', () => showBookupdForm(book.id, book.name,book.author,book.year_published, book.loan_type));
+            
 
             actionCell.appendChild(deleteButton);
             actionCell.appendChild(updateButton);
@@ -424,7 +457,8 @@ const displayCustomers = async () => {
             const updateButton = document.createElement('button');
             updateButton.className = 'btn btn-success';
             updateButton.textContent = 'Update';
-            updateButton.addEventListener('click', () => showCustomerupdForm(customer.id));
+            updateButton.addEventListener('click', () => showCustomerupdForm(customer.id, customer.name, customer.city, customer.age));
+            
        
 
             actionCell.appendChild(deleteButton);
@@ -558,33 +592,86 @@ const displayLoans = async () => {
     }
 }
 
+function showLoanForm() {
+    var bookForm = document.getElementById("bookForm");
+    var customerForm = document.getElementById("customerForm");
+    var customerupdForm = document.getElementById("customerupdForm");
+    var bookupdForm = document.getElementById('bookupdForm');
+    var loanForm = document.getElementById('loanForm');
+
+
+    bookForm.style.display = "none";
+    customerupdForm.style.display = "none";
+    customerForm.style.display = "none"; 
+    bookupdForm.style.display = "none" ;
+    loanForm.style.display = "block" ;
+}
+
 function showBookForm() {
     var bookForm = document.getElementById("bookForm");
     var customerForm = document.getElementById("customerForm");
+    var customerupdForm = document.getElementById("customerupdForm");
+    var bookupdForm = document.getElementById('bookupdForm');
+    var loanForm = document.getElementById('loanForm');
 
     bookForm.style.display = "block";
     customerupdForm.style.display = "none";
-    customerForm.style.display = "none"; // Hide the customer form
+    customerForm.style.display = "none"; 
+    bookupdForm.style.display = "none" ;
+    loanForm.style.display = "none" ;
 }
 
 function showCustomerForm() {
     var bookForm = document.getElementById("bookForm");
     var customerForm = document.getElementById("customerForm");
+    var customerupdForm = document.getElementById("customerupdForm");
+    var bookupdForm = document.getElementById("bookupdForm");
 
     bookForm.style.display = "none"; // Hide the book form
     customerupdForm.style.display = "none";
     customerForm.style.display = "block";
+    bookupdForm.style.display = "none" ;
+    loanForm.style.display = "none" ;
 }
 
-function showCustomerupdForm(id) {
+function showCustomerupdForm(id, name,city,age) {
     var bookForm = document.getElementById("bookForm");
     var customerForm = document.getElementById("customerForm");
-    var customerupdForm = document.getElementById("customerupdForm"); // Corrected variable name
+    var customerupdForm = document.getElementById("customerupdForm");
+    var bookupdForm = document.getElementById('bookupdForm')
 
     bookForm.style.display = "none";
     customerForm.style.display = "none";
     customerupdForm.style.display = "block";
+    bookupdForm.style.display = "none" ;
+    loanForm.style.display = "none" ;
+
+    // Assuming you have form fields with IDs "upd_cust_id" and "cust_name"
     document.getElementById("upd_cust_id").value = id;
+    document.getElementById("upd_cust_name").value = name;
+    document.getElementById("upd_cust_city").value = city;
+    document.getElementById("upd_cust_age").value = age;
+}
+
+function showBookupdForm(id,name,author,year_published,loan_type) {
+    var bookForm = document.getElementById("bookForm");
+    var customerForm = document.getElementById("customerForm");
+    var customerupdForm = document.getElementById("customerupdForm");
+    var bookupdForm = document.getElementById('bookupdForm');
+
+    bookForm.style.display = "none";
+    customerForm.style.display = "none";
+    customerupdForm.style.display = "none";
+    bookupdForm.style.display = "block" ;
+    loanForm.style.display = "none" ;
+
+   
+    document.getElementById("upd_book_id").value = id;
+    document.getElementById("upd_book_name").value = name;
+    document.getElementById("upd_book_author").value = author;
+    document.getElementById("upd_book_yearPublished").value = year_published;
+    document.getElementById("upd_book_Loantype").value = loan_type;
+
 
 
    
