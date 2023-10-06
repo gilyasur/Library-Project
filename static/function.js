@@ -407,10 +407,15 @@ const displayBooks = async () => {
     }
 }
 
-const displayCustomers = async () => {
+const displayCustomers = async (filter) => {
     const customersContainer = document.getElementById('display');
     try {
         const customersData = await get_data_customers();
+
+        // Filter customers based on the search input
+        const filteredCustomers = filter
+            ? customersData.filter(customer => customer.name.toLowerCase().includes(filter.toLowerCase()))
+            : customersData;
 
         // Create an HTML table to display the data
         const table = document.createElement('table');
@@ -432,7 +437,7 @@ const displayCustomers = async () => {
         // Create table body
         const tableBody = document.createElement('tbody');
 
-        customersData.forEach(customer => {
+        filteredCustomers.forEach(customer => {
             const row = document.createElement('tr');
 
             // Populate the table cells with customer data
@@ -453,13 +458,11 @@ const displayCustomers = async () => {
             deleteButton.className = 'btn btn-danger';
             deleteButton.textContent = 'Delete';
             deleteButton.addEventListener('click', () => del_customer(customer.id));
-            
+
             const updateButton = document.createElement('button');
             updateButton.className = 'btn btn-success';
             updateButton.textContent = 'Update';
             updateButton.addEventListener('click', () => showCustomerupdForm(customer.id, customer.name, customer.city, customer.age));
-            
-       
 
             actionCell.appendChild(deleteButton);
             actionCell.appendChild(updateButton);
@@ -480,10 +483,13 @@ const displayCustomers = async () => {
         customersContainer.innerHTML = '';
         customersContainer.appendChild(table);
 
+        // Show the search input and button
+        showSearchInputAndButton();
+
     } catch (error) {
         console.error('Error displaying customers:', error);
     }
-}
+};
 
 const displayLoans = async () => {
     const loansContainer = document.getElementById('display');
@@ -685,6 +691,22 @@ const returnLoan = async (id) => {
     } catch (error) {
         console.error("Error updating loan:", error);
     }
+    }
+
+const searchButton = document.getElementById('searchButton');
+    searchButton.addEventListener('click', () => {
+    const searchInput = document.getElementById('searchInput').value;
+    displayCustomers(searchInput);
+    });
+
+// Add an event listener to the "Show Search Customer" button
+const showSearchCustomerButton = document.getElementById('showSearchCustomerButton');
+showSearchCustomerButton.addEventListener('click', () => {
+  const searchCustomerContainer = document.getElementById('searchCustomerContainer');
+  searchCustomerContainer.style.display = 'block'; // Show the search input and button
+});
+
+function showSearchInputAndButton() {
+    const searchCustomerContainer = document.getElementById('searchCustomerContainer');
+    searchCustomerContainer.style.display = 'block'; // Show the search input and button
 }
-
-

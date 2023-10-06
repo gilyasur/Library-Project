@@ -26,7 +26,7 @@ def get_loans():
             "return_date": return_date_str ,
              "loan_status": loan.loan_status # Include the formatted return_date
         })
-    
+
     return jsonify(res)  # Use jsonify to return a JSON response
 
 
@@ -43,8 +43,7 @@ def add_loans():
         if not book:
             return jsonify({"error": "Book not found"}), 404
 
-        if book.is_loaned():
-            return jsonify({"error": "Book is already loaned"}), 400
+  
 
         # Parse loan_date and return_date as Python date objects
         loan_date = datetime.strptime(data["loan_date"], "%Y-%m-%d")

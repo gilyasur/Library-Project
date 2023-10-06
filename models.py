@@ -22,9 +22,7 @@ class Book(db.Model):
         self.year_published = year_published
         self.loan_type = loan_type
 
-    def is_loaned(self):
-        # Check if there is an active loan for this book (loan_status = True)
-        return any(loan.loan_status for loan in self.loans)
+    
 
 class Customer(db.Model):
     __tablename__ = 'customers'
