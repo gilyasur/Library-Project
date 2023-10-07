@@ -4,6 +4,16 @@ let books = []
 let customers = []
 let loans = []
 let loan_type_js = ""
+
+var currentDate = new Date();
+
+// Get the current date
+var day = currentDate.getDate();
+var month = currentDate.getMonth() + 1; // Months are zero-based, so add 1
+var year = currentDate.getFullYear();
+
+
+
 const get_data_books = async () => {
     try {
         const res = await axios.get(`${MY_SERVER}books/get`);
@@ -320,6 +330,8 @@ populateDropdowns();
 
 
 const displayBooks = async () => {
+    const searchCustomerContainer = document.getElementById('searchCustomerContainer');
+    searchCustomerContainer.style.display = 'none';
     const booksContainer = document.getElementById('display');
     try {
         const booksData = await get_data_books();
@@ -492,6 +504,9 @@ const displayCustomers = async (filter) => {
 };
 
 const displayLoans = async () => {
+    const searchCustomerContainer = document.getElementById('searchCustomerContainer');
+    searchCustomerContainer.style.display = 'none';
+
     const loansContainer = document.getElementById('display');
     try {
         const loansData = await get_data_loans();
@@ -699,7 +714,6 @@ const searchButton = document.getElementById('searchButton');
     displayCustomers(searchInput);
     });
 
-// Add an event listener to the "Show Search Customer" button
 const showSearchCustomerButton = document.getElementById('showSearchCustomerButton');
 showSearchCustomerButton.addEventListener('click', () => {
   const searchCustomerContainer = document.getElementById('searchCustomerContainer');
@@ -710,3 +724,4 @@ function showSearchInputAndButton() {
     const searchCustomerContainer = document.getElementById('searchCustomerContainer');
     searchCustomerContainer.style.display = 'block'; // Show the search input and button
 }
+

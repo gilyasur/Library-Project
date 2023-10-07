@@ -62,5 +62,6 @@ db.ForeignKeyConstraint(['book_id'], ['books.id'])
 # Adding unique constraint for customer names
 db.UniqueConstraint('name', name='unique_customer_name')
 
+
 # Adding check constraint for loan_status (should be 0 or 1)
 db.CheckConstraint('loan_status IN (0, 1)', name='check_loan_status')

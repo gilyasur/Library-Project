@@ -68,6 +68,7 @@ margin-left: 70px;
         <button class="btn btn-danger" onclick="displayBooks()">Books List</button>
         <button class="btn btn-info" onclick="displayLoans()"> Loans List</button>
         <button class="btn btn-warning" onclick="displayCustomers()"> Customers List</button>
+       
     </div>
     <div class ="btn2">
         <button class="btn btn-danger" onclick="showBookForm()">Press to add Book </button>
@@ -78,7 +79,7 @@ margin-left: 70px;
    
        
         <div id="searchCustomerContainer" style="display: none;">
-          <input type="text" id="searchInput" placeholder="Search by name">
+          <input type="text" id="searchInput" placeholder="Search Customer name">
           <button id="searchButton" class="btn btn-primary">Search</button>
         </div>
    
@@ -157,7 +158,9 @@ margin-left: 70px;
         <button type="submit" onclick="createLoan()">Add Loan</button>
     </div>
     </form>
-
+    <footer>
+        <span id="currentDate"></span>
+    </footer>
     <script>
 
     </script>
