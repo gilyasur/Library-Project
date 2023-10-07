@@ -286,10 +286,12 @@ const createLoan = async () => {
         // Check the response status and display an alert accordingly
         if (response.status === 201) {
             showSuccessToast('Loan added successfully');
+            console.log("Loan added successfully");
         } else {
             console.error('Error adding loan:', response.data.error);
             showErrorToast('Error adding loan. Please try again.');
         }
+        
     } catch (error) {
         console.error('Error adding loan:', error);
         showErrorToast('Error adding loan. Please try again.');
@@ -724,4 +726,3 @@ function showSearchInputAndButton() {
     const searchCustomerContainer = document.getElementById('searchCustomerContainer');
     searchCustomerContainer.style.display = 'block'; // Show the search input and button
 }
-
