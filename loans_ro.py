@@ -32,23 +32,24 @@ def get_loans():
 
 
 
-
 @loans.route('/post', methods=["POST"])
 def add_loans():
     try:
         data = request.json
 
-        # Check if the book is already loaned
-        book = Book.query.get(data["book_id"])
-        if not book:
-            return jsonify({"error": "Book not found"}), 404
-
-  
+        # Check if the book is already loaned or returned
+        existing_loan = Loan.query.filter_by(book_id=data["book_id"], loan_status=True).first()
+        if existing_loan:
+            return jsonify({"error": "Book is already loaned"}), 400
 
         # Parse loan_date and return_date as Python date objects
         loan_date = datetime.strptime(data["loan_date"], "%Y-%m-%d")
 
         # Determine the loan type and set the return_date accordingly
+        book = Book.query.get(data["book_id"])
+        if not book:
+            return jsonify({"error": "Book not found"}), 404
+
         if book.loan_type == 1:
             return_date = loan_date + timedelta(days=10)
         elif book.loan_type == 2:
