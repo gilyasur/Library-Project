@@ -296,6 +296,7 @@ const createLoan = async () => {
         console.error('Error adding loan:', error);
         showErrorToast('Error adding loan. Please try again.');
     }
+    
 };
 
 
@@ -330,13 +331,17 @@ populateDropdowns();
 
 
 
-
-const displayBooks = async () => {
+const displayBooks = async (filter) => {
     const searchCustomerContainer = document.getElementById('searchCustomerContainer');
     searchCustomerContainer.style.display = 'none';
     const booksContainer = document.getElementById('display');
     try {
         const booksData = await get_data_books();
+
+        // Filter books based on the search input
+        const filteredBooks = filter
+            ? booksData.filter(book => book.name.toLowerCase().includes(filter.toLowerCase()))
+            : booksData;
 
         // Create an HTML table to display the data
         const table = document.createElement('table');
@@ -349,9 +354,7 @@ const displayBooks = async () => {
                     <th>ID</th>
                     <th>Name</th>
                     <th>Author</th>
-                 
                     <th>Year Published</th>
-                    
                     <th>Loan Type Period</th>
                     <th>Action</th>
                 </tr>
@@ -361,7 +364,7 @@ const displayBooks = async () => {
         // Create table body
         const tableBody = document.createElement('tbody');
 
-        booksData.forEach(book => {
+        filteredBooks.forEach(book => {
             const row = document.createElement('tr');
 
             // Populate the table cells with book data
@@ -373,9 +376,6 @@ const displayBooks = async () => {
 
             const authorCell = document.createElement('td');
             authorCell.textContent = book.author;
-            
-            
-       
 
             const yearPublishedCell = document.createElement('td');
             yearPublishedCell.textContent = book.year_published;
@@ -392,8 +392,7 @@ const displayBooks = async () => {
             const updateButton = document.createElement('button');
             updateButton.className = 'btn btn-success';
             updateButton.textContent = 'Update';
-            updateButton.addEventListener('click', () => showBookupdForm(book.id, book.name,book.author,book.year_published, book.loan_type));
-            
+            updateButton.addEventListener('click', () => showBookupdForm(book.id, book.name, book.author, book.year_published, book.loan_type));
 
             actionCell.appendChild(deleteButton);
             actionCell.appendChild(updateButton);
@@ -401,7 +400,6 @@ const displayBooks = async () => {
             row.appendChild(idCell);
             row.appendChild(nameCell);
             row.appendChild(authorCell);
-           
             row.appendChild(yearPublishedCell);
             row.appendChild(loanTypeCell);
             row.appendChild(actionCell);
@@ -415,14 +413,17 @@ const displayBooks = async () => {
         // Clear previous content and append the table
         booksContainer.innerHTML = '';
         booksContainer.appendChild(table);
-
+        showBookSearchInputAndButton();
     } catch (error) {
         console.error('Error displaying books:', error);
     }
 }
 
+
 const displayCustomers = async (filter) => {
     const customersContainer = document.getElementById('display');
+    const searchBookContainer = document.getElementById('searchBookContainer');
+    searchBookContainer.style.display = 'none';
     try {
         const customersData = await get_data_customers();
 
@@ -615,6 +616,8 @@ const displayLoans = async () => {
     }
 }
 
+
+
 function showLoanForm() {
     var bookForm = document.getElementById("bookForm");
     var customerForm = document.getElementById("customerForm");
@@ -716,13 +719,28 @@ const searchButton = document.getElementById('searchButton');
     displayCustomers(searchInput);
     });
 
-const showSearchCustomerButton = document.getElementById('showSearchCustomerButton');
-showSearchCustomerButton.addEventListener('click', () => {
-  const searchCustomerContainer = document.getElementById('searchCustomerContainer');
-  searchCustomerContainer.style.display = 'block'; // Show the search input and button
-});
-
 function showSearchInputAndButton() {
     const searchCustomerContainer = document.getElementById('searchCustomerContainer');
     searchCustomerContainer.style.display = 'block'; // Show the search input and button
 }
+
+function show() {
+    document.getElementById("mySidebar").style.width = "250px";
+    document.getElementById("content").style.marginLeft = "250px";
+ }
+ function hide() {
+    document.getElementById("mySidebar").style.width = "0";
+    document.getElementById("content").style.marginLeft = "0";
+ }
+
+ const searchBookButton = document.getElementById('searchBookButton');
+    searchBookButton.addEventListener('click', () => {
+    const searchBookInput = document.getElementById('searchBookInput').value;
+    displayBooks(searchBookInput);
+    });
+
+function showBookSearchInputAndButton() {
+    const searchBookContainer = document.getElementById('searchBookContainer');
+    searchBookContainer.style.display = 'block'; // Show the search input and button
+}
+

@@ -58,33 +58,98 @@ margin-left: 70px;
   padding: 10px;
 }
 
+.sidebar {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+   }
+   
+   .sidebar a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+   }
+   
+   .sidebar a:hover {
+      color: #f1f1f1;
+   }
+   
+   .sidebar .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+   }
+   
+   .openbtn {
+      font-size: 20px;
+      cursor: pointer;
+      color: black;
+      padding: 10px 15px;
+      border: none;
+   }
+   
+   .openbtn:hover {
+      background-color: #444;
+   }
+   
+   #content {
+      transition: margin-left 0.5s;
+      padding: 16px;
+      position: relative;
+  left: 0;
+  
+   }
+   .body {
+    transition: margin-left 0.5s;
+      padding: 16px;
+    
+   }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Library</h1>
-    
-    <div class="btn-container">
-        <div class ="btn1">
-        <button class="btn btn-danger" onclick="displayBooks()">Books List</button>
-        <button class="btn btn-info" onclick="displayLoans()"> Loans List</button>
-        <button class="btn btn-warning" onclick="displayCustomers()"> Customers List</button>
+    <h1 style="text-align: center;">Welcome to the Library</h1>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="hide()">×</a>
        
-    </div>
-    <div class ="btn2">
-        <button class="btn btn-danger" onclick="showBookForm()">Press to add Book </button>
-        <button class="btn btn-info" onclick="showLoanForm()">Press to add Loan </button>
-        <button class="btn btn-warning" onclick="showCustomerForm()">Press to add Customer </button>
-    </div>
-    </div>
+            <button class="btn btn-danger" onclick="displayBooks()">Books List</button><br>
+            <button class="btn btn-info" onclick="displayLoans()"> Loans List</button><br>
+            <button class="btn btn-warning" onclick="displayCustomers()"> Customers List</button><br>
+           
+  
+            <button class="btn btn-danger" onclick="showBookForm()">Press to add Book </button><br>
+            <button class="btn btn-info" onclick="showLoanForm()">Press to add Loan </button><br>
+            <button class="btn btn-warning" onclick="showCustomerForm()">Press to add Customer </button>
+        
+     </div>
+     <div id="content">
+        <button class="openbtn" id="openbtn" onclick="show()">☰</button><span><strong>Menu</strong></span>
+        
+    
+    
    
        
         <div id="searchCustomerContainer" style="display: none;">
           <input type="text" id="searchInput" placeholder="Search Customer name">
           <button id="searchButton" class="btn btn-primary">Search</button>
         </div>
-   
+     <div id="searchBookContainer" style="display: none;">
+          <input type="text" id="searchBookInput" placeholder="Search Book name">
+          <button id="searchBookButton" class="btn btn-primary">Search</button>
+        </div>
         
-      
+      <br>
     <div id="display"></div>
     
    
@@ -161,6 +226,7 @@ margin-left: 70px;
     <footer>
         <span id="currentDate"></span>
     </footer>
+</div>
     <script>
 
     </script>
