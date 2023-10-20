@@ -10,6 +10,9 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="../static/function.js" defer></script>
+    <!-- <script src="../static/loanFunction.js" defer></script>
+    <script src="../static/bookFunctions.js" defer></script>
+    <script src="../static/customerFunction.js" defer></script> -->
     <style>
         .btn-container {
         display: flex; /* Use flexbox to align buttons horizontally */
@@ -69,6 +72,7 @@ margin-left: 70px;
       overflow-x: hidden;
       transition: 0.5s;
       padding-top: 60px;
+      
    }
    
    .sidebar a {
@@ -120,17 +124,25 @@ margin-left: 70px;
 </head>
 <body>
     <h1 style="text-align: center;">Welcome to the Library</h1>
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="hide()">×</a>
-       
-            <button class="btn btn-danger" onclick="displayBooks()">Books List</button><br>
-            <button class="btn btn-info" onclick="displayLoans()"> Loans List</button><br>
-            <button class="btn btn-warning" onclick="displayCustomers()"> Customers List</button><br>
-           
+    <div id="mySidebar" class="sidebar" style="background-image: url('../static/BookSide.png');background-size: 100% 100%;">
+
+        <a href="javascript:void(0)" class="closebtn" onclick="hide()" style="color: black;">×</a>
+        
+        <h3 style="color: rgb(0, 0, 0); margin-left:10px">Books</h3>
+            <button class="btn btn-danger" onclick="displayBooks()"style="margin-left: 30px;">Books List</button><br>
+            <button class="btn btn-danger" onclick="showBookForm()"style="margin-left: 30px;">Add a Book </button><br>
+            <h3 style="color: rgb(0, 0, 0); margin-left:10px">Loans</h3>
+            <button class="btn btn-warning" onclick="displayLoans()"style="margin-left: 30px;"> Loans List</button><br>
+            <button class="btn btn-warning" onclick="displayLateLoans()"style="margin-left: 30px;" >Late Loans </button><br>
+            <button class="btn btn-warning" onclick="showLoanForm()"style="margin-left: 30px;">Add a Loan </button><br>
+            <h3 style="color: rgb(0, 0, 0); margin-left:10px">Customers</h3>
+            <button class="btn btn-success" onclick="displayCustomers()"style="margin-left: 30px;"> Customers List</button>
+            <button class="btn btn-success" onclick="showCustomerForm()"style="margin-left: 30px;">Add a Customer </button>
   
-            <button class="btn btn-danger" onclick="showBookForm()">Press to add Book </button><br>
-            <button class="btn btn-info" onclick="showLoanForm()">Press to add Loan </button><br>
-            <button class="btn btn-warning" onclick="showCustomerForm()">Press to add Customer </button>
+           
+            
+            
+            
         
      </div>
      <div id="content">
@@ -149,7 +161,7 @@ margin-left: 70px;
           <button id="searchBookButton" class="btn btn-primary">Search</button>
         </div>
         
-      <br>
+      
     <div id="display"></div>
     
    
@@ -223,8 +235,13 @@ margin-left: 70px;
         <button type="submit" onclick="createLoan()">Add Loan</button>
     </div>
     </form>
+    <div id="displayLateLoans">
+
+    </div>
+
+    
     <footer>
-        <span id="currentDate"></span>
+        <div id="currentDate" style="text-align: center;"></div>
     </footer>
 </div>
     <script>

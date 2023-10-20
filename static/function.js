@@ -1,4 +1,4 @@
-const MY_SERVER = "http://127.0.0.1:2001/"
+const MY_SERVER = "http://127.0.0.1:2003/"
 let index= 0
 let books = []
 let customers = []
@@ -11,6 +11,14 @@ var currentDate = new Date();
 var day = currentDate.getDate();
 var month = currentDate.getMonth() + 1; // Months are zero-based, so add 1
 var year = currentDate.getFullYear();
+
+// Convert day, month, and year to strings
+var dayStr = day < 10 ? '0' + day : day.toString();
+var monthStr = month < 10 ? '0' + month : month.toString();
+var yearStr = year.toString();
+
+// Create the European date format "dd/mm/yyyy"
+var europeanDateFormat = dayStr + '/' + monthStr + '/' + yearStr;
 
 
 
@@ -342,11 +350,16 @@ const displayBooks = async (filter) => {
         const filteredBooks = filter
             ? booksData.filter(book => book.name.toLowerCase().includes(filter.toLowerCase()))
             : booksData;
-
+        
+         
+        const header = document.createElement('h2');
+        header.textContent = 'Books';
+        header.style.textAlign = 'center';
+        header.style.textDecoration = 'underline';
         // Create an HTML table to display the data
         const table = document.createElement('table');
         table.className = 'table table-bordered'; // You can add Bootstrap classes if needed
-
+        
         // Create table headers
         const tableHeader = `
             <thead>
@@ -412,6 +425,7 @@ const displayBooks = async (filter) => {
 
         // Clear previous content and append the table
         booksContainer.innerHTML = '';
+        booksContainer.appendChild(header);
         booksContainer.appendChild(table);
         showBookSearchInputAndButton();
     } catch (error) {
@@ -431,7 +445,10 @@ const displayCustomers = async (filter) => {
         const filteredCustomers = filter
             ? customersData.filter(customer => customer.name.toLowerCase().includes(filter.toLowerCase()))
             : customersData;
-
+        const header = document.createElement('h2');
+        header.textContent = 'Customers';
+        header.style.textAlign = 'center';
+        header.style.textDecoration = 'underline';
         // Create an HTML table to display the data
         const table = document.createElement('table');
         table.className = 'table table-bordered'; // You can add Bootstrap classes if needed
@@ -496,7 +513,9 @@ const displayCustomers = async (filter) => {
 
         // Clear previous content and append the table
         customersContainer.innerHTML = '';
+        customersContainer.appendChild(header);
         customersContainer.appendChild(table);
+        
 
         // Show the search input and button
         showSearchInputAndButton();
@@ -527,7 +546,10 @@ const displayLoans = async () => {
         booksData.forEach(book => {
             bookMap[book.id] = book.name;
         });
-
+        const header = document.createElement('h2');
+        header.textContent = 'Loans';
+        header.style.textAlign = 'center';
+        header.style.textDecoration = 'underline';
         // Create an HTML table to display the data
         const table = document.createElement('table');
         table.className = 'table table-bordered'; // You can add Bootstrap classes if needed
@@ -607,6 +629,7 @@ const displayLoans = async () => {
 
         // Clear previous content and append the table
         loansContainer.innerHTML = '';
+        loansContainer.appendChild(header);
         loansContainer.appendChild(table);
 
     } catch (error) {
@@ -616,6 +639,7 @@ const displayLoans = async () => {
     }
 }
 
+displayLoans();
 
 
 function showLoanForm() {
@@ -732,6 +756,7 @@ function show() {
     document.getElementById("mySidebar").style.width = "0";
     document.getElementById("content").style.marginLeft = "0";
  }
+ show()
 
  const searchBookButton = document.getElementById('searchBookButton');
     searchBookButton.addEventListener('click', () => {
@@ -744,3 +769,111 @@ function showBookSearchInputAndButton() {
     searchBookContainer.style.display = 'block'; // Show the search input and button
 }
 
+
+const displayLateLoans = async () => {
+    const loansContainer = document.getElementById('display');
+    try {
+        const loansData = await get_data_loans();
+        const customersData = await get_data_customers();
+        const booksData = await get_data_books();
+
+        // Create an object to map customer IDs to names
+        const customerMap = {};
+        customersData.forEach(customer => {
+            customerMap[customer.id] = customer.name;
+        });
+
+        // Create an object to map book IDs to names
+        const bookMap = {};
+        booksData.forEach(book => {
+            bookMap[book.id] = book.name;
+        });
+
+        // Get the current date
+        const currentDate = new Date();
+
+        // Filter loans that are late
+        const lateLoans = loansData.filter(loan => {
+            const returnDate = new Date(loan.return_date);
+            return returnDate < currentDate; // Compare dates
+        });
+
+        // Create an HTML container for the header and the table
+        const container = document.createElement('div');
+
+        // Create the header element
+        const header = document.createElement('h2');
+        header.textContent = 'Late Loans';
+      
+        header.style.textAlign = 'center';
+        header.style.textDecoration = 'underline';
+
+        // Create an HTML table to display the late loans
+        const table = document.createElement('table');
+        table.className = 'table table-bordered'; // You can add Bootstrap classes if needed
+
+        // Create table headers
+        const tableHeader = `
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer Name</th>
+                    <th>Book Name</th>
+                    <th>Loan Date</th>
+                    <th>Return Date</th>
+                    <th>Loan Status</th>
+                </tr>
+            </thead>
+        `;
+
+        // Create table body
+        const tableBody = document.createElement('tbody');
+
+        lateLoans.forEach(loan => {
+            const row = document.createElement('tr');
+
+            // Populate the table cells with late loan data
+            const idCell = document.createElement('td');
+            idCell.textContent = loan.id;
+
+            const customerNameCell = document.createElement('td');
+            customerNameCell.textContent = customerMap[loan.customer_id];
+
+            const bookNameCell = document.createElement('td');
+            bookNameCell.textContent = bookMap[loan.book_id];
+
+            const loanDateCell = document.createElement('td');
+            loanDateCell.textContent = loan.loan_date;
+
+            const returnDateCell = document.createElement('td');
+            returnDateCell.textContent = loan.return_date;
+
+            const loanStatusCell = document.createElement('td');
+            loanStatusCell.textContent = loan.loan_status ? 'On Loan' : 'Returned';
+
+            row.appendChild(idCell);
+            row.appendChild(customerNameCell);
+            row.appendChild(bookNameCell);
+            row.appendChild(loanDateCell);
+            row.appendChild(returnDateCell);
+            row.appendChild(loanStatusCell);
+
+            tableBody.appendChild(row);
+        });
+
+        table.innerHTML = tableHeader;
+        table.appendChild(tableBody);
+
+        // Append the header and the table to the container
+        container.appendChild(header);
+        container.appendChild(table);
+
+        // Clear previous content and append the container to the late loans div
+        loansContainer.innerHTML = '';
+        loansContainer.appendChild(container);
+    } catch (error) {
+        console.error('Error displaying late loans:', error);
+        // Display an error message to the user if needed
+        loansContainer.innerHTML = 'Error displaying late loans. Please try again later.';
+    }
+}
