@@ -80,6 +80,7 @@ const del_book = async (id) => {
     } catch (error) {
         console.error('Error deleting book:', error);
     }
+    displayBooks();
 }
 const del_customer = async (id) => {
     try {
@@ -90,6 +91,7 @@ const del_customer = async (id) => {
     } catch (error) {
         console.error('Error deleting book:', error);
     }
+    displayCustomers();
 }
 
 const upd_customer = async () => {
@@ -128,6 +130,7 @@ const upd_customer = async () => {
     } catch (error) {
         console.error('Error updating customer:', error);
     }
+    displayCustomers();
 }
 
 const upd_Book = async () => {
@@ -163,6 +166,7 @@ const upd_Book = async () => {
     } catch (error) {
         console.error('Error updating customer:', error);
     }
+    displayBooks();
 }
 
 function showSuccessToast(message) {
@@ -223,6 +227,7 @@ const add_book = async () => {
         // Display an error toast if there's an error
         showErrorToast('Error adding book. Please try again.');
     }
+    displayBooks();
 }
 
 const add_customer = async () => {
@@ -261,6 +266,7 @@ const add_customer = async () => {
         // Display an error toast if there's an error
         showErrorToast('Error adding customer. Please try again.');
     }
+    displayCustomers();
 }
 
 
@@ -304,6 +310,7 @@ const createLoan = async () => {
         console.error('Error adding loan:', error);
         showErrorToast('Error adding loan. Please try again.');
     }
+    displayLoans();
     
 };
 
@@ -736,6 +743,7 @@ const returnLoan = async (id) => {
         console.error("Error updating loan:", error);
     }
     }
+    displayLoans();
 
 const searchButton = document.getElementById('searchButton');
     searchButton.addEventListener('click', () => {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Library</title>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
@@ -117,7 +117,9 @@ margin-left: 70px;
    }
    .body {
     transition: margin-left 0.5s;
-      padding: 16px;
+    padding: 16px;
+  
+      
     
    }
     </style>
@@ -128,14 +130,14 @@ margin-left: 70px;
 
         <a href="javascript:void(0)" class="closebtn" onclick="hide()" style="color: black;">×</a>
         
-        <h3 style="color: rgb(0, 0, 0); margin-left:10px">Books</h3>
+        <h3 style="color: rgb(0, 0, 0); margin-left:10px;background-color: rgb(246, 140, 140);display: inline;">Books</h3><br>
             <button class="btn btn-danger" onclick="displayBooks()"style="margin-left: 30px;">Books List</button><br>
             <button class="btn btn-danger" onclick="showBookForm()"style="margin-left: 30px;">Add a Book </button><br>
-            <h3 style="color: rgb(0, 0, 0); margin-left:10px">Loans</h3>
+            <h3 style="color: rgb(0, 0, 0); margin-left:10px;background-color: rgb(247, 234, 135);display: inline;">Loans</h3><br>
             <button class="btn btn-warning" onclick="displayLoans()"style="margin-left: 30px;"> Loans List</button><br>
             <button class="btn btn-warning" onclick="displayLateLoans()"style="margin-left: 30px;" >Late Loans </button><br>
             <button class="btn btn-warning" onclick="showLoanForm()"style="margin-left: 30px;">Add a Loan </button><br>
-            <h3 style="color: rgb(0, 0, 0); margin-left:10px">Customers</h3>
+            <h3 style="color: rgb(0, 0, 0); margin-left:10px;background-color: rgb(118, 254, 145);display: inline;">Customers</h3>
             <button class="btn btn-success" onclick="displayCustomers()"style="margin-left: 30px;"> Customers List</button>
             <button class="btn btn-success" onclick="showCustomerForm()"style="margin-left: 30px;">Add a Customer </button>
   
