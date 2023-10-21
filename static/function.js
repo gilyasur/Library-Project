@@ -75,13 +75,17 @@ const del_book = async (id) => {
     try {
         const response = await axios.delete(`${MY_SERVER}/books/delete/${id}`);
         console.log(response.data); // Log the success message or handle it as needed
+
         // Optionally, you can refresh the books list or update the UI after a successful delete
-        displayBooks(); // Example: Refresh the books list
+        // Assuming displayBooks is an async function that fetches and displays the updated book list
+        await displayBooks(); // Example: Refresh the books list
+
     } catch (error) {
         console.error('Error deleting book:', error);
+        showErrorToast('Error Deleting Book. Please try again.');
     }
-    displayBooks();
 }
+
 const del_customer = async (id) => {
     try {
         const response = await axios.delete(`${MY_SERVER}/customers/delete/${id}`);
@@ -89,7 +93,8 @@ const del_customer = async (id) => {
         
         displayCustomers(); 
     } catch (error) {
-        console.error('Error deleting book:', error);
+        console.error('Error deleting customer:', error);
+        showErrorToast('Error Deleting Customer. Please try again.');
     }
     displayCustomers();
 }
@@ -885,3 +890,6 @@ const displayLateLoans = async () => {
         loansContainer.innerHTML = 'Error displaying late loans. Please try again later.';
     }
 }
+
+
+
