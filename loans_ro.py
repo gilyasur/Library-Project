@@ -16,13 +16,13 @@ def get_loans():
     
     for loan in Loan.query.all():
         # Convert loan.return_date to a string in the desired format
-        return_date_str = loan.return_date.strftime("%d-%m-%Y")
+        return_date_str = loan.return_date.strftime("%Y-%m-%d")
         
         res.append({
             "id": loan.id,
             "customer_id": loan.customer_id,
             "book_id": loan.book_id,
-            "loan_date": loan.loan_date.strftime("%d-%m-%Y"),  # Convert loan_date as well
+            "loan_date": loan.loan_date.strftime("%Y-%m-%d"),  # Convert loan_date as well
             "return_date": return_date_str ,
              "loan_status": loan.loan_status # Include the formatted return_date
         })

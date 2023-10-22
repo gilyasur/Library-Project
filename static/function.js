@@ -315,7 +315,7 @@ const createLoan = async () => {
         console.error('Error adding loan:', error);
         showErrorToast('Error adding loan. Please try again.');
     }
-    displayLoans();
+    
     }
 
 
@@ -812,8 +812,11 @@ const displayLateLoans = async () => {
         // Filter loans that are late
         const lateLoans = loansData.filter(loan => {
             const returnDate = new Date(loan.return_date);
-            return loan.loan_status && returnDate < currentDate; // Check loan status and return date
+            return loan.loan_status && returnDate < currentDate;
+            
+            // Check loan status and return date
         });
+        
 
         // Create an HTML container for the header and the table
         const container = document.createElement('div');

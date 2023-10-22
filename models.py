@@ -8,7 +8,7 @@ class Book(db.Model):
     __tablename__ = 'books'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False,)
+    name = db.Column(db.String(255), nullable=False, unique=True)
     author = db.Column(db.String(255), nullable=False)
     year_published = db.Column(db.Integer, nullable=False)
     loan_type = db.Column(db.Integer, nullable=False)
@@ -44,7 +44,7 @@ class Loan(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False, unique=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False,)
     loan_date = db.Column(db.Date, nullable=False)
     return_date = db.Column(db.Date)
     loan_status = db.Column(db.Boolean, default=True)
