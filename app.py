@@ -30,14 +30,14 @@ def Home():
 DEBUG = False
 def create_sample_data():
     # Create some sample books
-    book1 = Book(name="Book 1", author="Author 1", year_published=2020, loan_type=1)
-    book2 = Book(name="Book 2", author="Author 2", year_published=2018, loan_type=2)
-    book3 = Book(name="Book 3", author="Author 3", year_published=2015, loan_type=1)
+    book1 = Book(name="Harry Potter", author="Jk Rowling", year_published=1997, loan_type=1)
+    book2 = Book(name="The Bible", author="God", year_published=1, loan_type=2)
+    book3 = Book(name="1984", author="George Orwell", year_published=1949, loan_type=1)
 
     # Create some sample customers
-    customer1 = Customer(name="Customer 1", city="City 1", age=30)
-    customer2 = Customer(name="Customer 2", city="City 2", age=25)
-    customer3 = Customer(name="Customer 3", age=28)
+    customer1 = Customer(name="Gil", city="Yavne", age=34)
+    customer2 = Customer(name="Nir", city="Kazir", age=37)
+    customer3 = Customer(name="Guy", city="Lehavot", age=41)
 
 
 

@@ -316,8 +316,7 @@ const createLoan = async () => {
         showErrorToast('Error adding loan. Please try again.');
     }
     displayLoans();
-    
-};
+    }
 
 
 // Function to populate customer and book dropdowns
@@ -326,6 +325,10 @@ const populateDropdowns = async () => {
     const bookDropdown = document.getElementById('bookDropdown');
     const customersData = await get_data_customers();
     const booksData = await get_data_books();
+
+    // Sort customersData and booksData alphabetically by name
+    customersData.sort((a, b) => a.name.localeCompare(b.name));
+    booksData.sort((a, b) => a.name.localeCompare(b.name));
 
     // Populate the customer dropdown
     customersData.forEach(customer => {
@@ -343,6 +346,7 @@ const populateDropdowns = async () => {
         bookDropdown.appendChild(option);
     });
 };
+
 
 // Call the populateDropdowns function to fill the dropdowns with data
 populateDropdowns();
@@ -751,10 +755,10 @@ const returnLoan = async (id) => {
     displayLoans();
 
 const searchButton = document.getElementById('searchButton');
-    searchButton.addEventListener('click', () => {
-    const searchInput = document.getElementById('searchInput').value;
-    displayCustomers(searchInput);
-    });
+searchButton.addEventListener('click', () => {
+const searchInput = document.getElementById('searchInput').value;
+displayCustomers(searchInput);
+});
 
 function showSearchInputAndButton() {
     const searchCustomerContainer = document.getElementById('searchCustomerContainer');
@@ -808,7 +812,7 @@ const displayLateLoans = async () => {
         // Filter loans that are late
         const lateLoans = loansData.filter(loan => {
             const returnDate = new Date(loan.return_date);
-            return returnDate < currentDate; // Compare dates
+            return loan.loan_status && returnDate < currentDate; // Check loan status and return date
         });
 
         // Create an HTML container for the header and the table

@@ -10,121 +10,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="../static/function.js" defer></script>
-    <!-- <script src="../static/loanFunction.js" defer></script>
-    <script src="../static/bookFunctions.js" defer></script>
-    <script src="../static/customerFunction.js" defer></script> -->
-    <style>
-        .btn-container {
-        display: flex; /* Use flexbox to align buttons horizontally */
-        gap: 10px; /* Adjust the gap between buttons as needed */
-        margin-bottom: 10px; /* Add some spacing between button rows */
-    }
-    .btn1{
+    <link rel="stylesheet" type="text/css" href="../static/css.css">
 
-margin-right: 70px;
-
-}
-
-.btn2{
-
-margin-left: 70px;
-
-}
-#bookForm {
-    margin: auto;
-  width: 50%;
-  border: 3px solid green;
-  padding: 10px;
-}
-#customerForm {
-    margin: auto;
-  width: 50%;
-  border: 3px solid green;
-  padding: 10px;
-}
-#customerupdForm {
-    margin: auto;
-  width: 50%;
-  border: 3px solid green;
-  padding: 10px;
-}
-#bookupdForm {
-    margin: auto;
-  width: 50%;
-  border: 3px solid green;
-  padding: 10px;
-}
-#loanForm {
-    margin: auto;
-  width: 50%;
-  border: 3px solid green;
-  padding: 10px;
-}
-
-.sidebar {
-      height: 100%;
-      width: 0;
-      position: fixed;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      background-color: #111;
-      overflow-x: hidden;
-      transition: 0.5s;
-      padding-top: 60px;
-      
-   }
-   
-   .sidebar a {
-      padding: 8px 8px 8px 32px;
-      text-decoration: none;
-      font-size: 25px;
-      color: #818181;
-      display: block;
-      transition: 0.3s;
-   }
-   
-   .sidebar a:hover {
-      color: #f1f1f1;
-   }
-   
-   .sidebar .closebtn {
-      position: absolute;
-      top: 0;
-      right: 25px;
-      font-size: 36px;
-      margin-left: 50px;
-   }
-   
-   .openbtn {
-      font-size: 20px;
-      cursor: pointer;
-      color: black;
-      padding: 10px 15px;
-      border: none;
-   }
-   
-   .openbtn:hover {
-      background-color: #444;
-   }
-   
-   #content {
-      transition: margin-left 0.5s;
-      padding: 16px;
-      position: relative;
-  left: 0;
-  
-   }
-   .body {
-    transition: margin-left 0.5s;
-    padding: 16px;
-  
-      
-    
-   }
-
-   
-    </style>
 </head>
 <body>
     <h1 style="text-align: center;">Welcome to the Library</h1>
@@ -221,13 +108,13 @@ margin-left: 70px;
     <form id="addLoanForm" >
         <label for="customerDropdown">Select Customer:</label>
         <select id="customerDropdown" required>
-            <!-- Customer options will be populated dynamically via JavaScript -->
+           
         </select>
         <br>
 
         <label for="bookDropdown">Select Book:</label>
         <select id="bookDropdown" required>
-            <!-- Book options will be populated dynamically via JavaScript -->
+
         </select>
         <br>
 
