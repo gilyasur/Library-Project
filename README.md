@@ -15,7 +15,7 @@ features of the project:
  Gui created with Html + css + Javascript
 
 	## General info
-![Image from Project](../Library-Project/static/imagesproj.PNG)
+![Image from Project](https://github.com/gilyasur/Library-Project/blob/main/static/imagesproj.PNG)
 	
 ## Setup
 To run this project, start a virtual enviorment and install requirements :
