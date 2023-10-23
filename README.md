@@ -14,7 +14,7 @@ features of the project:
 
  Gui created with Html + css + Javascript
 
-	## General info
+## Project
 ![Image from Project](https://github.com/gilyasur/Library-Project/blob/main/static/imagesproj.PNG)
 	
 ## Setup
