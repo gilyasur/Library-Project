@@ -12,14 +12,6 @@ var day = currentDate.getDate();
 var month = currentDate.getMonth() + 1; // Months are zero-based, so add 1
 var year = currentDate.getFullYear();
 
-// Convert day, month, and year to strings
-var dayStr = day < 10 ? '0' + day : day.toString();
-var monthStr = month < 10 ? '0' + month : month.toString();
-var yearStr = year.toString();
-
-// Create the European date format "dd/mm/yyyy"
-var europeanDateFormat = dayStr + '/' + monthStr + '/' + yearStr;
-
 
 
 const get_data_books = async () => {
