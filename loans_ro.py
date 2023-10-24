@@ -22,12 +22,12 @@ def get_loans():
             "id": loan.id,
             "customer_id": loan.customer_id,
             "book_id": loan.book_id,
-            "loan_date": loan.loan_date.strftime("%Y-%m-%d"),  # Convert loan_date as well
+            "loan_date": loan.loan_date.strftime("%Y-%m-%d"),  
             "return_date": return_date_str ,
              "loan_status": loan.loan_status # Include the formatted return_date
         })
 
-    return jsonify(res)  # Use jsonify to return a JSON response
+    return jsonify(res)  
 
 
 
@@ -42,7 +42,7 @@ def add_loans():
         if existing_loan:
             return jsonify({"error": "Book is already loaned"}), 400
 
-        # Parse loan_date and return_date as Python date objects
+        
         loan_date = datetime.strptime(data["loan_date"], "%Y-%m-%d")
 
         # Determine the loan type and set the return_date accordingly
@@ -69,34 +69,34 @@ def add_loans():
         return jsonify({"error": "Failed to add loan", "details": str(e)}), 400
 
     
-@loans.route('/delete/<int:id>', methods=["DELETE"])  # Include 'id' as a route parameter
+@loans.route('/delete/<int:id>', methods=["DELETE"])  
 def del_loans(id):
     try:
-        # Check if the book with the specified ID exists
+       
         loa = Loan.query.get(id)
         
         if not loa:
-            return jsonify({"error": "Loan not found"}), 404  # Return a 404 response if the book doesn't exist
+            return jsonify({"error": "Loan not found"}), 404  
 
         db.session.delete(loa)
         db.session.commit()
         
-        return jsonify({"message": "Loan deleted successfully"}), 200  # Return a success response with status code 200
+        return jsonify({"message": "Loan deleted successfully"}), 200 
     except Exception as e:
-        return jsonify({"error": "Failed to delete loan", "details": str(e)}), 500  # Return an error response with status code 500 (Internal Server Error) if an exception occurs
+        return jsonify({"error": "Failed to delete loan", "details": str(e)}), 500 
 
 @loans.route('/put/<int:id>', methods=["put"])
 def update_loan(id):
     try:
        
         
-        # Check if the loan with the specified ID exists
+        
         loan = Loan.query.get(id)
   
         if not loan:
             return jsonify({"error": "Loan not found"}), 404 
         
-        # Update the loan_status to True
+    
         loan.loan_status = False
         
         db.session.commit()

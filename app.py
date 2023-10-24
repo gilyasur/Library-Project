@@ -9,25 +9,20 @@ from flask_cors import CORS
 
 
 
-
 app = Flask(__name__)
 CORS(app)
 app.register_blueprint(loans)
 app.register_blueprint(books)
 app.register_blueprint(customers)
 
-# Correct the typo in the configuration key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///library.sqlite3'
 
-
-
-# Set up the application context
 app.app_context().push()
 
 @app.route('/')
 def Home():
     return render_template('index.html')
-DEBUG = False
+DEBUG = True
 def create_sample_data():
     # Create some sample books
     book1 = Book(name="Harry Potter", author="Jk Rowling", year_published=1997, loan_type=1)
@@ -41,17 +36,18 @@ def create_sample_data():
 
 
 
-    # Add objects to the session and commit to the database
-    db.session.add_all([book1, book2, book3, customer1, customer2, customer3])
+    db.session.add(book1)
+    db.session.add(book2)
+    db.session.add(book3)
+    db.session.add(customer1)
+    db.session.add(customer2)
+    db.session.add(customer3)
     db.session.commit()
 
 
 if __name__ == "__main__":
-    # Create the database tables if they don't exist
     db.init_app(app)
-    
     db.create_all()
-    if DEBUG :
+    if DEBUG:
         create_sample_data()
-    # Run the Flask application
-    app.run(debug=True,port=2003)
+    app.run(debug=True, port=2003, use_reloader=False)

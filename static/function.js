@@ -9,19 +9,41 @@ var currentDate = new Date();
 
 // Get the current date
 var day = currentDate.getDate();
-var month = currentDate.getMonth() + 1; // Months are zero-based, so add 1
+var month = currentDate.getMonth() + 1; 
 var year = currentDate.getFullYear();
 
+//Toasts - Success and Error
+function showSuccessToast(message) {
+    Toastify({
+        text: message,
+        duration: 2000, 
+        gravity: "top", 
+        position: "left", 
+        stopOnFocus: true, 
+        onClick: function() {} 
+    }).showToast();
+}
 
+function showErrorToast(message) {
+    Toastify({
+        text: message,
+        duration: 2000, 
+        gravity: "top", 
+        position: "left",
+        stopOnFocus: true, 
+        onClick: function() {} 
+    }).showToast();
+}
 
+//recieve data from server
 const get_data_books = async () => {
     try {
         const res = await axios.get(`${MY_SERVER}books/get`);
         const books = res.data;
-        console.log(books); // Log the API response
+        console.log(books); 
 
-        // Default value for loan_type_js if loan_type is missing
-        const loanType = books.loan_type || 0; // Assuming 0 is a suitable default
+        
+        const loanType = books.loan_type || 0; 
         
         if (loanType == 1) { loan_type_js = "10 days"; }
         else if (loanType == 2) { loan_type_js = "5 days"; }
@@ -63,14 +85,15 @@ function get_all_data(){
 }
 get_all_data()
 
+//CRUD FOR BOOKS, Customers, Loans (create, Delete, Update and loan a book)
+
 const del_book = async (id) => {
     try {
         const response = await axios.delete(`${MY_SERVER}/books/delete/${id}`);
-        console.log(response.data); // Log the success message or handle it as needed
+        console.log(response.data); 
 
-        // Optionally, you can refresh the books list or update the UI after a successful delete
-        // Assuming displayBooks is an async function that fetches and displays the updated book list
-        await displayBooks(); // Example: Refresh the books list
+       
+        await displayBooks(); 
 
     } catch (error) {
         console.error('Error deleting book:', error);
@@ -93,7 +116,6 @@ const del_customer = async (id) => {
 
 const upd_customer = async () => {
     try {
-        // Get values from form fields
         const id = document.getElementById("upd_cust_id").value;
         const newName = document.getElementById("upd_cust_name").value;
         const newCity = document.getElementById("upd_cust_city").value;
@@ -102,8 +124,6 @@ const upd_customer = async () => {
         console.log("Name:", newName);
         console.log("City:", newCity);
         console.log("Age:", newAge);
-
-        // Create an object with the fields to update
         const data = {
             name: newName,
             city: newCity,
@@ -113,13 +133,10 @@ const upd_customer = async () => {
         const response = await axios.patch(`${MY_SERVER}/customers/update/${id}`, data);
         console.log(response.data);
 
-        // Check the response status code to handle success or failure
         if (response.status === 200) {
             showSuccessToast(`Customer Update successfully: ${newName} in city ${newCity}, at the age of ${newAge}`);
 
             console.log('Customer updated successfully');
-            // Optionally, you can refresh the customer list after updating
-            // displayCustomers();
         } else {
             showErrorToast('Error Updating customer. Please try again.');
             console.error('Failed to update customer:', response.data.error);
@@ -132,15 +149,12 @@ const upd_customer = async () => {
 
 const upd_Book = async () => {
     try {
-        // Get values from form fields
         const id = document.getElementById("upd_book_id").value;
         const newName = document.getElementById("upd_book_name").value;
         const newAuthor = document.getElementById("upd_book_author").value;
         const newyearPublished = document.getElementById("upd_book_yearPublished").value;
         const newLoantype = document.getElementById("upd_book_Loantype").value;
  
-
-        // Create an object with the fields to update
         const data = {
             name: newName,
             author: newAuthor,
@@ -151,10 +165,8 @@ const upd_Book = async () => {
         const response = await axios.patch(`${MY_SERVER}/books/update/${id}`, data);
         console.log(response.data);
 
-        // Check the response status code to handle success or failure
         if (response.status === 200) {
             console.log('Book updated successfully');
-            // Optionally, you can refresh the customer list after updating
             showSuccessToast(`Book Update successfully: ${newName} by ${newAuthor}, published in ${newyearPublished}, Loan Type: ${newLoantype}`);
         } else {
             showErrorToast('Error Updating book. Please try again.');
@@ -166,49 +178,25 @@ const upd_Book = async () => {
     displayBooks();
 }
 
-function showSuccessToast(message) {
-    Toastify({
-        text: message,
-        duration: 2000, // Display for 3 seconds
-        gravity: "top", // Top or bottom
-        position: "left", // Left, center, or right
-        stopOnFocus: true, // Prevent dismissing on hover
-        onClick: function() {} // Callback after click
-    }).showToast();
-}
 
-function showErrorToast(message) {
-    Toastify({
-        text: message,
-        duration: 2000, // Display for 3 seconds
-        gravity: "top", // Top or bottom
-        position: "left", // Left, center, or right
-        stopOnFocus: true, // Prevent dismissing on hover
-        onClick: function() {} // Callback after click
-    }).showToast();
-}
 
 const add_book = async () => {
-    // Get the input values
     const name = boo_name.value;
     const author = boo_author.value;
-    const year_published = boo_year_published.value; // Make sure to use .value if this is an input element
-    const loan_type = boo_loan_type.value; // Make sure to use .value if this is an input element
+    const year_published = boo_year_published.value; 
+    const loan_type = boo_loan_type.value; 
 
-    // Validation: Check if any of the required fields are empty
     if (!name || !author || !year_published || !loan_type) {
         showErrorToast('Please fill in all the required fields.');
-        return; // Exit the function early if any field is empty
+        return; 
     }
 
-    // Validation: Check if "year_published" is a valid integer
     if (!Number.isInteger(Number(year_published))) {
         showErrorToast('Year published must be a valid integer.');
-        return; // Exit the function early if year_published is not an integer
+        return; 
     }
 
     try {
-        // Send a POST request to add the book
         const response = await axios.post(`${MY_SERVER}/books/post`, {
             name: name,
             author: author,
@@ -216,38 +204,32 @@ const add_book = async () => {
             loan_type: loan_type,
         });
 
-        // Display a success toast with book details
         showSuccessToast(`Book added successfully: ${name} by ${author}, published in ${year_published}, Loan Type: ${loan_type}`);
     } catch (error) {
         console.error('Error adding book:', error);
 
-        // Display an error toast if there's an error
         showErrorToast('Error adding book. Please try again.');
     }
     displayBooks();
 }
 
 const add_customer = async () => {
-    // Get the input values
     const name = cust_name.value;
     const city = cust_city.value;
-    const age = cust_age.value; // Make sure to use .value if this is an input element
+    const age = cust_age.value; 
 
-
-    // Validation: Check if any of the required fields are empty
     if (!name || !city || !age ) {
         showErrorToast('Please fill in all the required fields.');
-        return; // Exit the function early if any field is empty
+        return; 
     }
 
-    // Validation: Check if "year_published" is a valid integer
+
     if (!Number.isInteger(Number(age))) {
         showErrorToast('Age must be a valid integer.');
-        return; // Exit the function early if year_published is not an integer
+        return; 
     }
 
     try {
-        // Send a POST request to add the customer
         const response = await axios.post(`${MY_SERVER}/customers/post`, {
             name: name,
             city: city,
@@ -255,46 +237,38 @@ const add_customer = async () => {
             
         });
 
-        // Display a success toast with book details
         showSuccessToast(`Customer added successfully: ${name} in ${city}, aged  ${age}`);
     } catch (error) {
         console.error('Error adding customer:', error);
 
-        // Display an error toast if there's an error
         showErrorToast('Error adding customer. Please try again.');
     }
     displayCustomers();
 }
 
 
-// Function to create a loan
+
 const createLoan = async () => {
     try {
         const customerDropdown = document.getElementById('customerDropdown');
         const bookDropdown = document.getElementById('bookDropdown');
         const loanDateInput = document.getElementById('loanDate');
 
-        // Get selected customer and book IDs from the dropdowns
         const selectedCustomerId = customerDropdown.value;
         const selectedBookId = bookDropdown.value;
 
-        // Get loan date and return date from the input fields
         const loanDate = loanDateInput.value;
 
-        // Create the loan object
         const newLoan = {
             customer_id: selectedCustomerId,
             book_id: selectedBookId,
             loan_date: loanDate,
         };
 
-        // Send the new loan data to your server or API using Axios
         const response = await axios.post(`${MY_SERVER}/loans/post`, newLoan);
 
-        // Optionally, clear the form fields
         loanDateInput.value = '';
 
-        // Check the response status and display an alert accordingly
         if (response.status === 201) {
             showSuccessToast('Loan added successfully');
             console.log("Loan added successfully");
@@ -311,7 +285,6 @@ const createLoan = async () => {
     }
 
 
-// Function to populate customer and book dropdowns
 const populateDropdowns = async () => {
     const customerDropdown = document.getElementById('customerDropdown');
     const bookDropdown = document.getElementById('bookDropdown');
@@ -322,7 +295,6 @@ const populateDropdowns = async () => {
     customersData.sort((a, b) => a.name.localeCompare(b.name));
     booksData.sort((a, b) => a.name.localeCompare(b.name));
 
-    // Populate the customer dropdown
     customersData.forEach(customer => {
         const option = document.createElement('option');
         option.value = customer.id;
@@ -330,7 +302,6 @@ const populateDropdowns = async () => {
         customerDropdown.appendChild(option);
     });
 
-    // Populate the book dropdown
     booksData.forEach(book => {
         const option = document.createElement('option');
         option.value = book.id;
@@ -340,8 +311,7 @@ const populateDropdowns = async () => {
 };
 
 
-// Call the populateDropdowns function to fill the dropdowns with data
-populateDropdowns();
+
 
 
 
@@ -354,7 +324,6 @@ const displayBooks = async (filter) => {
     try {
         const booksData = await get_data_books();
 
-        // Filter books based on the search input
         const filteredBooks = filter
             ? booksData.filter(book => book.name.toLowerCase().includes(filter.toLowerCase()))
             : booksData;
@@ -364,11 +333,9 @@ const displayBooks = async (filter) => {
         header.textContent = 'Books';
         header.style.textAlign = 'center';
         header.style.textDecoration = 'underline';
-        // Create an HTML table to display the data
         const table = document.createElement('table');
-        table.className = 'table table-bordered'; // You can add Bootstrap classes if needed
+        table.className = 'table table-bordered'; 
         
-        // Create table headers
         const tableHeader = `
             <thead>
                 <tr>
@@ -382,13 +349,12 @@ const displayBooks = async (filter) => {
             </thead>
         `;
 
-        // Create table body
+
         const tableBody = document.createElement('tbody');
 
         filteredBooks.forEach(book => {
             const row = document.createElement('tr');
 
-            // Populate the table cells with book data
             const idCell = document.createElement('td');
             idCell.textContent = book.id;
 
@@ -431,7 +397,6 @@ const displayBooks = async (filter) => {
         table.innerHTML = tableHeader;
         table.appendChild(tableBody);
 
-        // Clear previous content and append the table
         booksContainer.innerHTML = '';
         booksContainer.appendChild(header);
         booksContainer.appendChild(table);
@@ -449,7 +414,6 @@ const displayCustomers = async (filter) => {
     try {
         const customersData = await get_data_customers();
 
-        // Filter customers based on the search input
         const filteredCustomers = filter
             ? customersData.filter(customer => customer.name.toLowerCase().includes(filter.toLowerCase()))
             : customersData;
@@ -457,11 +421,8 @@ const displayCustomers = async (filter) => {
         header.textContent = 'Customers';
         header.style.textAlign = 'center';
         header.style.textDecoration = 'underline';
-        // Create an HTML table to display the data
         const table = document.createElement('table');
-        table.className = 'table table-bordered'; // You can add Bootstrap classes if needed
-
-        // Create table headers
+        table.className = 'table table-bordered'; 
         const tableHeader = `
             <thead>
                 <tr>
@@ -474,13 +435,11 @@ const displayCustomers = async (filter) => {
             </thead>
         `;
 
-        // Create table body
         const tableBody = document.createElement('tbody');
 
         filteredCustomers.forEach(customer => {
             const row = document.createElement('tr');
 
-            // Populate the table cells with customer data
             const idCell = document.createElement('td');
             idCell.textContent = customer.id;
 
@@ -519,13 +478,13 @@ const displayCustomers = async (filter) => {
         table.innerHTML = tableHeader;
         table.appendChild(tableBody);
 
-        // Clear previous content and append the table
+
         customersContainer.innerHTML = '';
         customersContainer.appendChild(header);
         customersContainer.appendChild(table);
         
 
-        // Show the search input and button
+     
         showSearchInputAndButton();
 
     } catch (error) {
@@ -543,13 +502,11 @@ const displayLoans = async () => {
         const customersData = await get_data_customers();
         const booksData = await get_data_books();
 
-        // Create an object to map customer IDs to names
         const customerMap = {};
         customersData.forEach(customer => {
             customerMap[customer.id] = customer.name;
         });
 
-        // Create an object to map book IDs to names
         const bookMap = {};
         booksData.forEach(book => {
             bookMap[book.id] = book.name;
@@ -558,11 +515,11 @@ const displayLoans = async () => {
         header.textContent = 'Loans';
         header.style.textAlign = 'center';
         header.style.textDecoration = 'underline';
-        // Create an HTML table to display the data
-        const table = document.createElement('table');
-        table.className = 'table table-bordered'; // You can add Bootstrap classes if needed
 
-        // Create table headers
+        const table = document.createElement('table');
+        table.className = 'table table-bordered'; 
+
+
         const tableHeader = `
             <thead>
                 <tr>
@@ -577,13 +534,12 @@ const displayLoans = async () => {
             </thead>
         `;
 
-        // Create table body
+
         const tableBody = document.createElement('tbody');
 
         loansData.forEach(loan => {
             const row = document.createElement('tr');
 
-            // Populate the table cells with loan data
             const idCell = document.createElement('td');
             idCell.textContent = loan.id;
 
@@ -611,9 +567,9 @@ const displayLoans = async () => {
                 try {
                     
                     await returnLoan(loan.id);
-                    // Update the UI to reflect the returned status
+                   
                     LoanStatusCell.textContent = 'Returned';
-                    ReturnedButton.disabled = true; // Disable the button after returning
+                    ReturnedButton.disabled = true; 
                 } catch (error) {
                     console.error('Error returning loan:', error);
                 }
@@ -635,14 +591,14 @@ const displayLoans = async () => {
         table.innerHTML = tableHeader;
         table.appendChild(tableBody);
 
-        // Clear previous content and append the table
+
         loansContainer.innerHTML = '';
         loansContainer.appendChild(header);
         loansContainer.appendChild(table);
 
     } catch (error) {
         console.error('Error displaying loans:', error);
-        // Display an error message to the user if needed
+
         loansContainer.innerHTML = 'Error displaying loans. Please try again later.';
     }
 }
@@ -651,6 +607,7 @@ displayLoans();
 
 
 function showLoanForm() {
+    populateDropdowns();
     var bookForm = document.getElementById("bookForm");
     var customerForm = document.getElementById("customerForm");
     var customerupdForm = document.getElementById("customerupdForm");
@@ -685,7 +642,7 @@ function showCustomerForm() {
     var customerupdForm = document.getElementById("customerupdForm");
     var bookupdForm = document.getElementById("bookupdForm");
 
-    bookForm.style.display = "none"; // Hide the book form
+    bookForm.style.display = "none"; 
     customerupdForm.style.display = "none";
     customerForm.style.display = "block";
     bookupdForm.style.display = "none" ;
@@ -704,7 +661,6 @@ function showCustomerupdForm(id, name,city,age) {
     bookupdForm.style.display = "none" ;
     loanForm.style.display = "none" ;
 
-    // Assuming you have form fields with IDs "upd_cust_id" and "cust_name"
     document.getElementById("upd_cust_id").value = id;
     document.getElementById("upd_cust_name").value = name;
     document.getElementById("upd_cust_city").value = city;
@@ -754,9 +710,9 @@ displayCustomers(searchInput);
 
 function showSearchInputAndButton() {
     const searchCustomerContainer = document.getElementById('searchCustomerContainer');
-    searchCustomerContainer.style.display = 'block'; // Show the search input and button
+    searchCustomerContainer.style.display = 'block'; 
 }
-
+// Menu features - Show and Hide
 function show() {
     document.getElementById("mySidebar").style.width = "250px";
     document.getElementById("content").style.marginLeft = "250px";
@@ -775,10 +731,10 @@ function show() {
 
 function showBookSearchInputAndButton() {
     const searchBookContainer = document.getElementById('searchBookContainer');
-    searchBookContainer.style.display = 'block'; // Show the search input and button
+    searchBookContainer.style.display = 'block'; 
 }
 
-
+//displaying late loans
 const displayLateLoans = async () => {
     const loansContainer = document.getElementById('display');
     try {
@@ -786,45 +742,45 @@ const displayLateLoans = async () => {
         const customersData = await get_data_customers();
         const booksData = await get_data_books();
 
-        // Create an object to map customer IDs to names
+
         const customerMap = {};
         customersData.forEach(customer => {
             customerMap[customer.id] = customer.name;
         });
 
-        // Create an object to map book IDs to names
+
         const bookMap = {};
         booksData.forEach(book => {
             bookMap[book.id] = book.name;
         });
 
-        // Get the current date
+
         const currentDate = new Date();
 
-        // Filter loans that are late
+
         const lateLoans = loansData.filter(loan => {
             const returnDate = new Date(loan.return_date);
             return loan.loan_status && returnDate < currentDate;
             
-            // Check loan status and return date
+
         });
         
 
-        // Create an HTML container for the header and the table
+
         const container = document.createElement('div');
 
-        // Create the header element
+
         const header = document.createElement('h2');
         header.textContent = 'Late Loans';
       
         header.style.textAlign = 'center';
         header.style.textDecoration = 'underline';
 
-        // Create an HTML table to display the late loans
-        const table = document.createElement('table');
-        table.className = 'table table-bordered'; // You can add Bootstrap classes if needed
 
-        // Create table headers
+        const table = document.createElement('table');
+        table.className = 'table table-bordered'; 
+
+        
         const tableHeader = `
             <thead>
                 <tr>
@@ -838,13 +794,13 @@ const displayLateLoans = async () => {
             </thead>
         `;
 
-        // Create table body
+        
         const tableBody = document.createElement('tbody');
 
         lateLoans.forEach(loan => {
             const row = document.createElement('tr');
 
-            // Populate the table cells with late loan data
+            
             const idCell = document.createElement('td');
             idCell.textContent = loan.id;
 
@@ -876,16 +832,16 @@ const displayLateLoans = async () => {
         table.innerHTML = tableHeader;
         table.appendChild(tableBody);
 
-        // Append the header and the table to the container
+       
         container.appendChild(header);
         container.appendChild(table);
 
-        // Clear previous content and append the container to the late loans div
+        
         loansContainer.innerHTML = '';
         loansContainer.appendChild(container);
     } catch (error) {
         console.error('Error displaying late loans:', error);
-        // Display an error message to the user if needed
+        
         loansContainer.innerHTML = 'Error displaying late loans. Please try again later.';
     }
 }

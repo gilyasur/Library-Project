@@ -9,10 +9,10 @@ from models import *
 books = Blueprint('books', __name__, url_prefix='/books')
 
 
-@books.route('/get', methods=["GET"])  # Use correct route decorator
+@books.route('/get', methods=["GET"])  
 def get_books():
     res = []
-    for book in Book.query.all():  # Fix the query syntax
+    for book in Book.query.all():  
         res.append({"id": book.id, "name": book.name,"author": book.author,"loan_type": book.loan_type,"year_published": book.year_published})
     return json.dumps(res)
 
@@ -26,39 +26,39 @@ def add_books():
         db.session.add(newBook)
         db.session.commit()
         
-        return jsonify({"message": "Book added successfully"}), 201  # Return a success response with status code 201 (Created)
+        return jsonify({"message": "Book added successfully"}), 201 
     except Exception as e:
-        return jsonify({"error": "Failed to add book", "details": str(e)}), 400  # Return an error response with status code 400 (Bad Request)
+        return jsonify({"error": "Failed to add book", "details": str(e)}), 400  
 from flask import jsonify, request
 
-@books.route('/delete/<int:id>', methods=["DELETE"])  # Include 'id' as a route parameter
+@books.route('/delete/<int:id>', methods=["DELETE"])  
 def del_books(id):
     try:
-        # Check if the book with the specified ID exists
+        
         boo = Book.query.get(id)
         
         if not boo:
-            return jsonify({"error": "Book not found"}), 404  # Return a 404 response if the book doesn't exist
+            return jsonify({"error": "Book not found"}), 404  
 
         db.session.delete(boo)
         db.session.commit()
         
-        return jsonify({"message": "Book deleted successfully"}), 200  # Return a success response with status code 200
+        return jsonify({"message": "Book deleted successfully"}), 200  
     except Exception as e:
-        return jsonify({"error": "Failed to delete book", "details": str(e)}), 500  # Return an error response with status code 500 (Internal Server Error) if an exception occurs
+        return jsonify({"error": "Failed to delete book", "details": str(e)}), 500   
 
-@books.route('/update/<int:id>', methods=["PATCH"])  # Include 'id' as a route parameter
+@books.route('/update/<int:id>', methods=["PATCH"])  
 def update_book(id):
     try:
-        data = request.json  # JSON request body containing fields to update
+        data = request.json  
         
-        # Check if the book with the specified ID exists
+        
         book = Book.query.get(id)
         
         if not book:
-            return jsonify({"error": "Book not found"}), 404  # Return a 404 response if the book doesn't exist
+            return jsonify({"error": "Book not found"}), 404  
         
-        # Update the book fields based on the data provided in the request
+       
         if "name" in data:
             book.name = data["name"]
         if "author" in data:
@@ -70,6 +70,6 @@ def update_book(id):
         
         db.session.commit()
         
-        return jsonify({"message": "Book updated successfully"}), 200  # Return a success response with status code 200
+        return jsonify({"message": "Book updated successfully"}), 200 
     except Exception as e:
-        return jsonify({"error": "Failed to update book", "details": str(e)}), 500  # Return an error response with status code 500 (Internal Server Error) if an exception occurs
+        return jsonify({"error": "Failed to update book", "details": str(e)}), 500  
