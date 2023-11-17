@@ -22,7 +22,7 @@ app.app_context().push()
 @app.route('/')
 def Home():
     return render_template('index.html')
-DEBUG = True
+DEBUG = False
 def create_sample_data():
     # Create some sample books
     book1 = Book(name="Harry Potter", author="Jk Rowling", year_published=1997, loan_type=1)

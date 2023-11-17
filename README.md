@@ -20,8 +20,8 @@ features of the project:
 ## Setup
 To run this project, start a virtual enviorment and install requirements :
 ```
-$ pip install -r Requirements.txt
-$ app - py app.py
+install all necessary packages - $ pip install -r Requirements.txt
+Run the app - py app.py
 ```
 - open the link to browser in CMD 
 - Enjoy
